@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-freshafdashboard-dev-111547-authRole",
+      "UnauthRoleArn": "arn:aws:iam::175302565902:role/amplify-freshafdashboard-dev-111547-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::175302565902:role/amplify-freshafdashboard-dev-111547-authRole",
+      "Region": "ca-central-1",
+      "DeploymentBucketName": "amplify-freshafdashboard-dev-111547-deployment",
+      "UnauthRoleName": "amplify-freshafdashboard-dev-111547-unauthRole",
+      "StackName": "amplify-freshafdashboard-dev-111547",
+      "StackId": "arn:aws:cloudformation:ca-central-1:175302565902:stack/amplify-freshafdashboard-dev-111547/aaa969d0-f3bd-11eb-a092-0a9db59d5bf2",
+      "AmplifyAppId": "d24ygckvkc04ct"
+    },
+    "categories": {
+      "auth": {
+        "freshafdashboard": {}
+      }
+    }
+  }
+}

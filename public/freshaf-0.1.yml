@@ -1,0 +1,44 @@
+version: '0.1'
+
+thresholds:
+  velocity:
+    bronze: 5
+    silver: 10
+    gold: 20
+  security:
+    bronze: 5
+    silver: 10
+    gold: 20
+  quality:
+    bronze: 5
+    silver: 10
+    gold: 20
+  resilience:
+    bronze: 5
+    silver: 10
+    gold: 20
+
+questions:
+- id: app-runs-locally
+  summary: App runs end-to-end locally
+  points:
+    velocity: 5
+  description: | 
+    "End-to-end" here means the frontend, backend, and database can be
+    easily spun up so anyone can test the app locally. This can be achieved quite
+    easily using docker-compose.
+  benefits:
+    - Increases iteration speed. Pushing code to a dev environment in order to test it is slow and can disrupt other developers.
+    - Improves onboarding. It's much easier to learn a code base if you can run it locally.
+
+- id: pr-linting
+  summary: Automatic linting
+  points:
+    velocity: 2
+  description: | 
+    Something automatically enforces linting rules. 
+    Possibly a linting check on PRs. 
+    Possibly a pre-commit hook so you can't commit unlinted code.
+  benefits:
+    - Tidier code is easier to read.
+    - Forces you to pick a codestyle, which reduces arguments.

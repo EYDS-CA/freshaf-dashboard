@@ -2,7 +2,7 @@ import useAxios from "axios-hooks"
 import { useCallback, useEffect, useState } from "react"
 import yaml from 'js-yaml'
 
-const version = '2.0'
+const version = '0.1'
 
 export type Level = 'paper' | 'bronze' | 'silver' | 'gold'
 export type Category = 'quality' | 'velocity' | 'resilience' | 'security'

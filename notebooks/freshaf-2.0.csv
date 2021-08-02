@@ -1,0 +1,94 @@
+summary,,velocity,security,quality,resilience,description
+App runs end-to-end locally,,200,,,,"""End-to-end"" here means the frontend, backend, and database can be easily spun up so anyone can test the app locally. This can be achieved quite easily using docker-compose.
+The aim here is to decrease the amount of time it takes to test new code. Pushing code to a dev environment in order to test it is slow and can disrupt other developers."
+CI/CD pipeline created,,100,,,,
+Test environment exists,,100,25,,,QAs should be able to test features in isolation from the development environment.
+Staging environment exists,,50,25,,,POs/BAs should be able to test features in isolation from the dev and test environments.
+Pushing to any branch or merging a PR requires project membership,,,50,,,"Could any FreshWorks employee push code to your repo? Or any other non-project member? If so, please restrict project membership."
+Production is not accessible from non-production environments,,,50,,,"Easy solution is to keep them in separate VPCs (if on AWS). Alternatively, entirely separate accounts for dev/test/staging vs. production is a good solution. If on OpenShift, please be careful with cross-namespace access in network config."
+Any code deployed to production must have been approved by at least one other person other than the author of the code,,,25,,,Just requiring a single approval on all PRs fulfils this requirement. We don't want people yolo-merging into prod.
+Production deployments can only be performed by an admin user,,,50,,,"A good approach to this is to only allow deployments from your CI server (e.g. GitHub Actions), and make sure that an admin approval is required for any PR that would start a deployment to prod. I would recommend having all developers being 'admin's for any early stage projects."
+Access to all infrastructure requires 2FA,,,100,,,"If you are using a client mandated platform which does not support 2FA then this is N/A. However, if not, please get some 2FA going!"
+Access to all infrastructure requires specific user credentials (rather than a shared key),,,100,,,There should be no shared accounts or keys for accessing infrastructure.
+Production data storage is only accessible to a production administrator,,,25,,,"Production ""state"" here refers to databases, sessions state (e.g. Redis), or message brokers."
+Production architecture is only accessible to a production administrator,,,25,,,"Accessing production architecture is, e.g. logging into the AWS or OpenShift console with write permissions."
+Production logs are only accessible to production administrators,,,25,,,
+"Production backups, including logs, require production administrator permission to access",,,25,,,Production administrators must be agreed upon by the client and may include all developers.
+Accounts are granted infrastructure access automatically through infrastructure-as-code,,,100,,,This is great for compliance auditing. If your user access is managed by an external entity e.g. BC Gov OCIO team managing access to OpenShift then this is N/A.
+"Internal services, including databases, are only accessible from other services within this app",,,200,,,"This can be achieved using a private subnet in AWS and making sure only your load-balancer is in the public subnet. In OpenShift, make sure there are no routes into any services which should not be accessed by application users."
+"All production infrastructure access is logged, including the user who performed the access",,,200,,,"Can be done using CloudTrail in AWS. This information may be logged by the infrastructure provider, e.g. OCIO logs this for you if you are on their OpenShift cluster."
+Dependencies all target specific minor release versions,,25,,,,"Reproducible builds are important, and library version bumps should be done as part of a release process just like other code changes."
+All app dependencies are automatically analysed for vulnerabilities,,,100,,,"Fancy stuff, not something we have the tooling for at the moment though."
+All infrastructure components are automatically analysed for vulnerabilities,,,100,,,
+"Credentials, including database passwords and keys, are not stored anywhere in source control history, and are instead stored in a suitable secrets vault.",,,200,,,"A good example this is using https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets to inject any such passwords and keys as part of continuous deployment. Or, something like AWS SSM or OpenShift Secrets."
+"Secrets on mobile apps must not be reasonably accessible, even on jailbroken devices.",,,100,,,"API/SDK keys/passwords are stored in a way that they cannot be reasonably accessed, even on jailbroken devices (e.g. the keys aren't stored as plain text such that running `strings` on the binary will return the key)."
+Every release build must pass a ZAP automated scan,,,50,,,Easy security win is integrating ZAP into your test pipeline
+All major production releases have been manually penetration tested by someone with appropriate security training. This can be an internal FreshWorks team member or a third party.,,,400,,,Great to do if you need it for your project. Overkill if not requested by the client.
+All environments only expose ports 80 and 443 publicly. Only a bastion host may expose a single extra port.,,,50,,,
+All access to unsecured HTTP is redirected to an HTTPS endpoint,,,100,,,
+"If a security certificate is about to expire, an alert will be raised.",,25,,100,,A Google Calendar reminder for an expiring certificate will fulfil this goal
+All security certificates are automatically renewed,,100,,,,"AWS ACM is pretty good at this, otherwise a certbot cron job can do the job"
+"All data in transit must be encrypted. The minimum standard for this encryption is Mozilla's ""Intermediate"" or above.",,,100,,,Make sure you have your TLS settings up-to-date!
+"All data at rest must be encrypted. The minimum standard for this encryption is Mozilla's ""acceptable"" or above.",,,100,,,"OCIO OCP4 has this switched on at the cluster level, so a free win if you are using this platform. If on AWS make sure you have encryption-at-rest switched in for all volumes, especially any databases."
+"Mobile apps store logs encrypted on-device, which are then sent by the user and decrypted by FreshWorks.",,,50,,100,
+User visible error messages contain no technical information,,,50,200,,No technical jargon or stack traces in user-facing errors please.
+Protected data only exists in the production environment,,,200,,,"This includes database servers and logs. Just don't put protected data anywhere in the dev and test environment please, it is a compliance nightmare."
+"Log messages never contain secrets, personally identifying, or otherwise protected data.",,,200,,,This includes frontend and backend logging.
+All production deployment history is recorded,,25,100,,,
+Deployments require zero downtime,,300,,300,,
+"Production deployments are blue/green, utilizing automated smoke tests",,,,200,,
+All infrastructure changes exist in code and can be PR'd,,300,,200,,"As an example, creating AWS apps using terraform or cloudformation, and making changes in these scripts rather than making changes in the console. IaC techniques mean you can have continuous delivery on the architecture itself."
+IaC is the same template for all environments,,50,,,,"Make sure you are using the same terraform or OpenShift config for all environments, to make sure production matches test/dev"
+IaC changes are automatically applied to environments in CI/CD,,200,,,,This requirement is about being able to deploy IaC in the same way you would deploy a code change.
+"All HTTP endpoints conform to standards around safety, idempotency, and cacheability",,50,,50,,
+All cacheable API HTTP endpoints are cached,,,,50,,CloudFront is great for this. Speeds up user experience.
+"Static frontend code is cached in-memory, and returns correct Cache-Control headers",,,,50,,"CloudFront my dudes. Alternatively you can serve your frontend code from a server that supports in-memory caching, like nginx."
+Logging never blocks the application.,,,,25,,"Make sure to process log shipping on a separate thread, even if you are just writing to disk."
+App has been appropriately performance tested,,,,100,,"Performance testing includes both load-testing and stress-testing, and should be commensurate with app requirements. For example, if we expect a maximum of 100 concurrent users then this is what should be tested. Please collaborate with a QA Analyst on performance testing. An example tool for this is JMeter."
+"All elements of the application stack will automatically scale in response to load, up to the limits of the underlying infrastructure",,,,100,,"Easy with serverless, harder with OpenShift, practically impossible on bare metal."
+Application availability is regularly logged,,,,50,,Health checks in most container-based hosting platforms will give you this.
+A health/availability dashboard is available with clear information on historical app health and metrics,,,,50,,CloudWatch can get you this. There are also dashboards in the OpenShift console that can be used.
+The app remains available despite the loss of any single machine,,,,100,,
+Application state is regularly backed up and the application is able to be rolled back to this backed-up state.,,,,,400,"The simplest implementation of this is a regular database backup script, and a method for restoring this backup. Managed database services, like AWS RDS, are highly recommended if available. For OpenShift deployments we recommend https://github.com/BCDevOps/backup-container."
+Production backups are made to a suitable resilient data store,,,,,100,"Any backup done to a resilient store like S3, which includes RDS backups, gets this requirement for free."
+Production backups are checked after every release to gain confidence that the backup process is still generating backup files with the correct lookback windows.,,,,,200,
+An automated process validates that backup files exist and have the correct lookback windows. An alert will be thrown if these backups do not exist.,,50,,,50,"A common approach to this is to have an internal endpoint which lists the available backups, and then use an automated monitoring tool like prometheus to regularly check that these backups have the correct lookbacks."
+Roll-backs require no application downtime,,,,200,,
+Any actions required to rollback an app to a previous version or state can be done within 5 minutes,,,,100,50,"This is worded as ""any actions required"" so that App Store releases, which can require a wait period to rollback, are still covered by this requirement."
+Log messages follow FreshWorks Logging Practices.,,50,,,,
+"Any error a user receives will be logged, whether generated on the backend or frontend",,,,100,,
+Any mobile front-end crash or critical error must be tracked.,,,,100,50,Tools like App Center or Firebase Crashlyticis will help us understand critical errors.
+Application logs are centrally available and searchable,,50,,,,
+"Logs from every part of the stack are centrally available, including infrastructure and database logs",,50,50,,,"Infrastructure logs include, but are not limited to, database logs, instance logs, load-balancer logs, and firewall logs."
+"Log collection will never run out of disk space, while still maintaining a lookback window of at least a week.",,100,,,,This requirement can be solved using log rotation with automatic cleanup. Very easy in AWS using S3 bucket object expiration rules.
+All security-critical workflows create logs which identify the user.,,,400,,,
+Encrypted logs are stored on-device and are sent by the user and decrypted by FreshWorks.,,,100,,,
+All user actions within the app create detailed logs,,25,100,,,
+"If the app becomes unavailable or unhealthy, an alert will be raised within 30 seconds",,,,400,,"Easy to do with uptimerobot.com. 30s is a 20s timeout, plus 5s to detect, plus 5s to alert."
+Any critical error in the app will raise an alert.,,,,200,,"The definition of a ""critical error"" is up to the team."
+"If logged errors cross a sensible threshold, an alert will be raised",,,,100,,"Threshold not specified as the aim is to not be too prescriptive and instead to encourage a conversation around what is appropriate for the application. The infrastructure must be in place so that alerts can be raised. This threshold can be ""1"" if you want all errors to create an alert."
+"If the system responsible for alerting becomes unavailable, this raises an alert",,,,200,,
+Alerts of sufficient severity will send a call or text-message to a relevant support team,,,,200,,"This will only be applicable for projects that have high uptime requirements and require immediate response to production issues. Otherwise, broadcasting alerts to appropriate Slack channels should be sufficient."
+A smoke test suite is run before every production release.,,,,200,,
+Test cases should be designed or reviewed by someone trained and experienced in quality assurance best practices.,,,100,25,,"If you have a member of the QA team doing your testing then you get this for free. If you do not have a suitable person assigned to your project, please contact a member of the QA team so they can review your test cases and advise on a test approach."
+Pull requests include information about the success or failure of regression tests,,100,,,,Just get your tests running as part of your CI/CD pipeline for each pull request
+Builds must produce no warnings to pass,,50,50,,,
+"All code is automatically linted, and non conforming code cannot be deployed (e.g. fails a build pipeline step, or fails a pre-commit hook)",,100,,,,
+Test code coverage statistics are available for the back-end,,50,,50,,
+Test code coverage statistics are available for the front-end,,50,,50,,
+A single end-to-end workflow is automatically tested for every release build,,200,,50,,One example is a user logging-in
+Every major workflow within the app is automatically tested for every release build,,500,,500,,
+Tests are comprehensive enough that any code change can be immediately pushed into production.,,1000,,250,,
+"All workflows can be manually tested locally after a single command from a fresh repo check-out. This will probably involve automatically seeding environments with example data, including user credentials.",,200,,,,"This is targeted towards local dev debugging, and is about making sure there is some representative data that can be seeded into local dev. This is not the formal QA process which should be done in an environment that is representative of production."
+Mobile test cases are run on a single device.,,,,100,,
+Mobile test cases are run on multiple devices that represent likely client usage.,,,,200,,
+Mobile test cases are run on all supported devices.,,,,300,,
+"All interfaces are manually tested for accessibility during the QA for major releases, and conform to Web Content Accessibility Guidelines 2.1 Level AA",,,,2,,
+All interfaces for all releases are automatically tested for compliance with WCAG 2.1 AA,,50,,300,,
+iOS apps support high contrast color-scheme configurations and dynamically-sized text.,,,,200,,
+iOS apps are fully usable with VoiceOver.,,,,200,,
+Localization should be supported,,,,200,,
+README.md is useful and kept up-to-date,,200,,,,"Great for project onboarding, and also for any open-source projects we are developing."
+All API endpoints have detailed API documentation,,100,,50,,OpenAPI docs or similar please
+API can be tested with a built-in tool like Swagger,,50,,,,Swagger is a great speed boost for development and testing.
+Architecture Decision Records exist,,100,,,,"For any non-obvious decisions, e.g. Quickblox vs. Twilio, please make a record of why you made the decision you did. You don't want to be trying to remember when you're having a meeting about it six months into the future. Not needed for decisions like ""we used Next.js"" or ""we used a SQL db""."

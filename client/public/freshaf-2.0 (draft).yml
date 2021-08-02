@@ -1,0 +1,480 @@
+version: '2.0'
+
+thresholds:
+  velocity:
+    bronze: 200
+    silver: 500
+    gold: 1000
+  security:
+    bronze: 200
+    silver: 500
+    gold: 1000
+  quality:
+    bronze: 200
+    silver: 500
+    gold: 1000
+  resilience:
+    bronze: 200
+    silver: 500
+    gold: 1000
+
+questions:
+- id: env-local-run
+  summary: App can be run end-to-end locally
+  points:
+    velocity: 100
+  description: >
+    '"End-to-end" here means the frontend, backend, and database can be
+    easily spun up so anyone can test the app locally. This can be achieved quite
+    easily using docker-compose.'
+    The aim here is to decrease the amount of time it takes to test new code. 
+    Pushing code to a dev environment in order to test it is slow and can disrupt other developers.
+- id: ci-tests-local-run
+  summary: Local start-up is tested as part of CI
+  points:
+    velocity: 25
+  description: |
+    If you don't do this then your docker-compose file will get out of date, and slow down
+    new people onboarding onto the project.
+- id: isolated-test-env
+  summary: Test environment exists
+  points:
+    velocity: 50
+    security: 10
+  description: QAs should be able to test changes in isolation from the development environment
+- id: UgklKL4p160=
+  summary: Any internals of the production environment are not accessible from other
+    environments
+  points:
+    security: 2
+  description: This includes database servers and logs.
+- id: hhsde4MvYIc=
+  summary: Pushing to any branch or merging a PR requires project membership
+  points:
+    security: 2
+- id: 7L9tAjQGIJI=
+  summary: Any code deployed to production must have been approved by at least one
+    other person other than the author of the code
+  points:
+    security: 3
+  description: Just requiring a single approval on all PRs fulfils this requirement
+- id: gpxjJPUPzvw=
+  summary: Production deployments can only be performed by an admin user
+  points:
+    security: 3
+  description: A good approach to this is to only allow deployments from your CI server
+    (e.g. GitHub Actions), and make sure that an admin approval is required for any
+    PR that would start a deployment to prod.
+- id: ZU1ohqy+1jI=
+  summary: Access to all infrastructure requires 2FA
+  points:
+    security: 2
+  description: If you are using a client mandated platform which does not support
+    2FA then this is N/A
+- id: iYVzwdXOicA=
+  summary: Access to all infrastructure requires specific user credentials (rather
+    than a shared key)
+  points:
+    security: 2
+  description: There should be no shared accounts or keys for accessing infrastructure
+- id: oHRbbx/VvjM=
+  summary: Production data storage is only accessible to an admin user
+  points:
+    security: 3
+  description: Production "state" here refers to databases, sessions state (e.g. Redis),
+    or message brokers.
+- id: Fa16XWfSGw4=
+  summary: Production architecture is only accessible to a production administrator
+  points:
+    security: 3
+  description: Production administrators must be agreed upon by the client
+- id: xOhKBPs6P3k=
+  summary: Production logs are only accessible to production administrators
+  points:
+    security: 3
+- id: uZudwovJVo0=
+  summary: All infrastructure, including backups and logs, are only accessible to
+    explicitly approved users.
+  points:
+    security: 2
+  description: The idea here is to make sure only developers of a project can access
+    the infrastructure of that project, as a minimum standard.
+- id: /srtF5hhTMo=
+  summary: Internal services, including databases, are only accessible from other
+    services within this app
+  points:
+    security: 1
+  description: This can be achieved using a private subnet in AWS and making sure
+    only your load-balancer is in the public subnet. In OpenShift, make sure there
+    are no routes into any services which should not be accessed by application users.
+- id: S7rLk/QzaVU=
+  summary: All production infrastructure access is logged, including the user who
+    performed the access
+  points:
+    security: 3
+- id: R1m1DhsIxP4=
+  summary: Dependencies all target specific minor release versions
+  points:
+    velocity: 1
+- id: XsugJa0LJJA=
+  summary: All app dependencies are automatically analysed for vulnerabilities
+  points:
+    security: 2
+- id: kC8t65JpF2Y=
+  summary: Credentials, including database passwords and keys, are not stored anywhere
+    in source control history, and are instead stored in a suitable secrets vault.
+  points:
+    security: 1
+  description: A good example this is using https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets
+    to inject any such passwords and keys as part of continuous deployment.
+- id: w/jpNyWlCHs=
+  summary: Secrets on mobile apps must not be reasonably accessible, even on jailbroken
+    devices.
+  points:
+    security: 2
+  description: API/SDK keys/passwords are stored in a way that they cannot be reasonably
+    accessed, even on jailbroken devices (e.g. the keys aren't stored as plain text
+    such that running `strings` on the binary will return the key).
+- id: Wagm8cZ98xo=
+  summary: Every release build must pass a ZAP automated scan
+  points:
+    security: 2
+- id: 3oBeREt/K48=
+  summary: All environments only expose ports 80 and 443 publicly. Only a bastion
+    host may expose a single extra port.
+  points:
+    security: 1
+- id: 03Y2roG2NJY=
+  summary: All access to unsecured HTTP is redirected to an HTTPS endpoint
+  points:
+    security: 1
+- id: jQxrNKLo1G8=
+  summary: If a security certificate is about to expire, an alert will be raised.
+  points:
+    velocity: 1
+    quality: 1
+- id: h+YYAHPfFWk=
+  summary: All security certificates are automatically renewed
+  points:
+    velocity: 2
+- id: 7rPf/hw/ilA=
+  summary: All data in transit must be encrypted. The minimum standard for this encryption
+    is Mozilla's "Intermediate" or above.
+  points:
+    security: 1
+- id: k38vrXLhO/Y=
+  summary: All data at rest must be encrypted. The minimum standard for this encryption
+    is Mozilla's "acceptable" or above.
+  points:
+    security: 1
+- id: 7SFvdvLRJRI=
+  summary: Mobile apps store logs encrypted on-device, which are then sent by the
+    user and decrypted by FreshWorks.
+  points:
+    resilience: 3
+- id: JLFq1bZmQMw=
+  summary: User visible error messages contain no technical information
+  points:
+    quality: 1
+    security: 1
+- id: I6wArfxgCl8=
+  summary: Personally identifying or otherwise confidential data is not stored anywhere
+    except a production database
+  points:
+    security: 1
+- id: Hr1mmcDLoDI=
+  summary: Log messages never contain secrets, personally identifying, or otherwise
+    confidential data.
+  points:
+    security: 1
+  description: This includes frontend and backend logging.
+- id: m2W7DlQ50Is=
+  summary: Every release version of the app is represented by a git tag
+  points:
+    velocity: 2
+    quality: 2
+- id: bXEnrtxGATo=
+  summary: Every release of the app is semantically versioned
+  points:
+    velocity: 2
+    quality: 2
+- id: zviFt8lwSYE=
+  summary: Deployment to an environment is performed automatically on pushes to certain
+    branches, e.g. develop deploys to dev, or when merging a PR. This is not applicable
+    if you are unable to automatically release, e.g. releasing a mobile app in the
+    store.
+  points:
+    velocity: 2
+- id: MbRwCLTLLc0=
+  summary: All production deployment history is recorded
+  points:
+    velocity: 2
+    security: 2
+- id: ydUb9yCRF4A=
+  summary: Deployments require zero downtime
+  points:
+    velocity: 2
+    quality: 2
+- id: GG9Exb2UU0Y=
+  summary: Production deployments are blue/green, utilizing automated smoke tests
+  points:
+    quality: 3
+- id: nCJKx7WwU4E=
+  summary: All infrastructure changes exist in code and can be PR'd
+  points:
+    velocity: 2
+    quality: 3
+  description: As an example, creating AWS apps using terraform or cloudformation,
+    and making changes in these scripts rather than making changes in the console.
+    IaC techniques mean you can have continuous delivery on the architecture itself.
+- id: 0tavwCN9688=
+  summary: All HTTP endpoints conform to standards around safety, idempotency, and
+    cacheability
+  points:
+    velocity: 2
+    quality: 2
+- id: wz3KWTeAlYA=
+  summary: Static frontend code is cached in-memory, and returns correct Cache-Control
+    headers
+  points:
+    quality: 3
+  description: CloudFront my dudes. Alternatively you can serve your frontend code
+    from a server that supports in-memory caching, like nginx.
+- id: Tc7ebQTdPI4=
+  summary: Backend application is stateless
+  points:
+    velocity: 2
+    quality: 2
+- id: HvN7xZ2pcRA=
+  summary: Logging never blocks the application.
+  points:
+    quality: 1
+  description: Make sure to process log shipping on a separate thread, even if you
+    are just writing to disk.
+- id: lGGP+8+AeUI=
+  summary: Any app that may experience a spike in demand has been manually performance
+    tested.
+  points:
+    quality: 3
+  description: Performance testing should be commensurate with app requirements. For
+    example, if we expect a maximum of 100 concurrent users then this is what should
+    be tested. Please collaborate with a QA Analyst on performance testing. An example
+    tool for this is JMeter.
+- id: QDax7JRazbo=
+  summary: An health endpoint exists for the backend. A 2XX from this endpoint should
+    represent the app being available, including any external services such as databases,
+    any 5XX status code or no response must indicate that the app is unavailable.
+  points:
+    quality: 1
+- id: 8xlmA5WLuMQ=
+  summary: Application availability is regularly logged
+  points:
+    quality: 3
+- id: kir8UdYg+rk=
+  summary: The app remains available despite the loss of any single machine
+  points:
+    quality: 2
+- id: jwyYIoQLB6U=
+  summary: The app remains available despite the loss of an entire hosting "availability
+    zone" or virtual network
+  points:
+    quality: 3
+- id: Fnk2tfkBPjk=
+  summary: Application state is regularly backed up and the application is able to
+    be rolled back to this backed-up state.
+  points:
+    resilience: 1
+  description: The simplest implementation of this is a regular database backup script,
+    and a method for restoring this backup. Managed database services, like AWS RDS,
+    are highly recommended if available. For OpenShift deployments we recommend https://github.com/BCDevOps/backup-container.
+- id: BOgKpVFbDJ4=
+  summary: Production backups are made to a suitable resilient data store
+  points:
+    resilience: 2
+  description: Any backup done to a resilient store like S3, which includes RDS backups,
+    gets this requirement for free.
+- id: 5wJjFFcXPQc=
+  summary: Production backups are manually checked after every release to gain confidence
+    that the backup process is still generating backup files with the correct lookback
+    windows.
+  points:
+    resilience: 2
+- id: V2U34hIuohg=
+  summary: An automated process validates that backup files exist and have the correct
+    lookback windows. An alert will be thrown if these backups do not exist.
+  points:
+    resilience: 3
+  description: A common approach to this is to have an internal endpoint which lists
+    the available backups, and then use an automated monitoring tool like prometheus
+    to regularly check that these backups have the correct lookbacks.
+- id: mRpXFCYhCk8=
+  summary: Any actions required to rollback an app to a previous version or state
+    can be done within two hours
+  points:
+    quality: 3
+  description: This is worded as "any actions required" so that App Store releases,
+    which can require a wait period to rollback, are still covered by this requirement.
+- id: AG20oQ5HoBw=
+  summary: Log messages follow FreshWorks Logging Practices.
+  points:
+    velocity: 1
+- id: RiftPAk4FRU=
+  summary: Any error a user receives will be logged, whether generated on the backend
+    or frontend
+  points:
+    quality: 3
+- id: AnDl4I+yK3M=
+  summary: Any mobile front-end crash or critical error must be tracked.
+  points:
+    quality: 2
+    resilience: 2
+  description: Tools like App Center or Firebase Crashlyticis will help us understand
+    critical errors.
+- id: VrufQu8yryA=
+  summary: Application logs are centrally available and searchable
+  points:
+    velocity: 3
+- id: eyTRJswnyzA=
+  summary: Log collection will never run out of disk space, while still maintaining
+    a lookback window of at least a week.
+  points:
+    velocity: 1
+  description: This requirement can be solved using log rotation with automatic cleanup.
+    Very easy in AWS using S3 bucket object expiration rules.
+- id: QzD8d0Ftui4=
+  summary: All security-critical workflows create logs which identify the user.
+  points:
+    security: 2
+- id: cG9TewNMs9U=
+  summary: If the app becomes unavailable or unhealthy, an alert will be raised within
+    30 seconds
+  points:
+    quality: 2
+  description: 30s is a 20s timeout, plus 5s to detect, plus 5s to alert.
+- id: 0D0cQIqd4KE=
+  summary: Any critical error in the app will raise an alert.
+  points:
+    quality: 3
+  description: The definition of a "critical error" is up to the team.
+- id: RsY/8tf/m+4=
+  summary: If logged errors cross a sensible threshold, an alert will be raised
+  points:
+    quality: 3
+  description: Threshold not specified as the aim is to not be too prescriptive and
+    instead to encourage a conversation around what is appropriate for the application.
+    The infrastructure must be in place so that alerts can be raised. This threshold
+    can be "1" if you want all errors to create an alert.
+- id: 95me4+L1rPo=
+  summary: If the system responsible for alerting becomes unavailable, this raises
+    an alert
+  points:
+    quality: 3
+- id: AEnKX3yvwyE=
+  summary: Alerts of sufficient severity will send a call or text-message to a relevant
+    support team
+  points:
+    quality: 3
+  description: This will only be applicable for projects that have high uptime requirements
+    and require immediate response to production issues. Otherwise, broadcasting alerts
+    to appropriate Slack channels should be sufficient.
+- id: 6w3u1gYFNZg=
+  summary: A regression test suite is run before every production release.
+  points:
+    quality: 1
+- id: i9eTIeEHO8o=
+  summary: Test cases should be designed or reviewed by someone trained and experienced
+    in quality assurance best practices.
+  points:
+    quality: 2
+    security: 2
+  description: If you do not have a suitable person assigned to your project, please
+    contact a member of the QA team so they can review your test cases.
+- id: 0LDN6GWaFQk=
+  summary: The existence of a branch test failure is visible on a PR
+  points:
+    velocity: 1
+- id: FiJVURR3gBs=
+  summary: Test reports are created and easily accessible for every PR'd branch
+  points:
+    velocity: 2
+- id: MWKBwVHnNZo=
+  summary: Builds must produce no warnings to pass
+  points:
+    velocity: 3
+    security: 3
+- id: vO/1a/Vr9XM=
+  summary: All code is automatically linted, and non conforming code cannot be deployed
+    (e.g. fails a build pipeline step, or fails a pre-commit hook)
+  points:
+    velocity: 2
+- id: gbD9Tn/Vads=
+  summary: A single end-to-end workflow is automatically tested for every release
+    build
+  points:
+    velocity: 2
+    quality: 2
+- id: gbTYaR6GFog=
+  summary: Every major workflow within the app is automatically tested for every release
+    build
+  points:
+    velocity: 3
+    quality: 3
+- id: XqISXi1KS0E=
+  summary: All workflows can be manually tested locally after a single command from
+    a fresh repo check-out. This will probably involve automatically seeding environments
+    with example data, including user credentials.
+  points:
+    velocity: 2
+  description: This is targeted towards local dev debugging, not the formal QA process
+    which should be done in an environment that is representative of production.
+- id: c5hKdrdMG48=
+  summary: Mobile test cases are run on a single device.
+  points:
+    quality: 1
+- id: a9eigG34CaY=
+  summary: Mobile test cases are run on multiple devices that represent likely client
+    usage.
+  points:
+    quality: 2
+- id: y8VlA45C4NQ=
+  summary: Mobile test cases are run on all supported devices.
+  points:
+    quality: 3
+- id: PyK419/dC70=
+  summary: Caches can be reset in a single command for debugging
+  points:
+    velocity: 2
+- id: H1ozmKQv5Sw=
+  summary: All interfaces are manually tested for accessibility during the QA for
+    major releases, and conform to Web Content Accessibility Guidelines 2.1 Level
+    AA
+  points:
+    quality: 2
+- id: L0EG4u2PO2M=
+  summary: All interfaces for all releases are automatically tested for compliance
+    with WCAG 2.1 AA
+  points:
+    velocity: 3
+    quality: 3
+- id: YYgBPQj1UW0=
+  summary: iOS apps support high contrast color-scheme configurations and dynamically-sized
+    text.
+  points:
+    quality: 3
+- id: /aNbrUHNX+M=
+  summary: iOS apps are fully usable with VoiceOver.
+  points:
+    quality: 3
+- id: xINbzfhMqWU=
+  summary: All services are named descriptively
+  points:
+    velocity: 1
+- id: coL4NBnUeNE=
+  summary: All API endpoints have detailed API documentation
+  points:
+    velocity: 1
+    quality: 1
+- id: fJyn0OU+4Ss=
+  summary: All architecture decisions have a corresponding ADR
+  points:
+    velocity: 3

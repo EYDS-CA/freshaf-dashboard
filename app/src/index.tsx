@@ -1,15 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
-import { createMuiTheme, ThemeProvider } from '@material-ui/core';
+import App from './components/App';
+import { createTheme, ThemeProvider } from '@material-ui/core';
+import { BrowserRouter } from 'react-router-dom';
 
-const theme = createMuiTheme()
+const theme = createTheme()
 
 ReactDOM.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
-      <App />
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
     </ThemeProvider>
   </React.StrictMode>,
   document.getElementById('root')

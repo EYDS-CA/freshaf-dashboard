@@ -1,8 +1,9 @@
 import { Accordion, AccordionDetails, AccordionSummary, Box, Checkbox, FormControlLabel, makeStyles, Paper, TextField, Typography } from "@material-ui/core";
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import React from "react";
+import { useParams } from "react-router-dom";
 import { titleCase } from 'title-case';
-import useFreshAf, { categories, Level } from "./freshaf";
+import useFreshAf, { categories, Level } from "../hooks/freshaf";
 
 const useStyles = makeStyles((theme) => ({
   question: {
@@ -36,14 +37,14 @@ const icons: Record<Level, string> = {
   gold: '🥇' 
 }
 
-export default function FrameworkTable() {
+export default function ProjectPage() {
   const classes = useStyles()
+  const { projectId } = useParams<{ projectId: string }>()
   const { 
     scores, 
     schema, 
     isAnswered,
-    addAnswer, 
-    deleteAnswer } = useFreshAf()
+    setAnswer } = useFreshAf({ projectId })
 
   return (
     <Box className={classes.root}>
@@ -71,9 +72,9 @@ export default function FrameworkTable() {
                   checked={isAnswered(question.id)}
                   onChange={(event) => {
                     if (event.target.checked) {
-                      addAnswer({ questionId: question.id })
+                      setAnswer({ questionId: question.id, answer: 'yes' })
                     } else {
-                      deleteAnswer(question.id)
+                      setAnswer({ questionId: question.id, answer: 'no' })
                     }
                   }} />}
               label={question.summary}/>

@@ -1,6 +1,7 @@
 import useAxios from "axios-hooks"
-import { useCallback, useEffect, useState } from "react"
 import yaml from 'js-yaml'
+import { useEffect, useState } from "react"
+import { Answer, saveProject, useGetProject } from "./projects"
 
 const version = '0.1'
 
@@ -21,18 +22,14 @@ export interface Schema {
   thresholds: Record<Category, Record<Level, number>>
 }
 
-export interface Answer {
-  questionId: string
-}
-
 export interface UseFreshAf {
   answers: Answer[]
   schema?: Schema
   scores: Scores
 
-  addAnswer(answer: Answer): void
-  deleteAnswer(questionId: string): void
+  setAnswer(answer: Answer): void
   isAnswered(questionId: string): boolean
+  saveAnswers(): Promise<void>
 }
 
 const startingScores: Scores = {
@@ -55,8 +52,8 @@ function highestThresholdPassed(thresholds: Record<Level, number>, score: number
   return { level: 'gold' }
 }
 
-function useFreshAfSchema() {
-  const [{ data: freshAfRaw, error }] = useAxios<string>({ url: `./freshaf-${version}.yml`, method: 'get' })
+function useFreshAfSchema(): { schema?: Schema, error?: Error } {
+  const [{ data: freshAfRaw, error }] = useAxios<string>({ url: `/freshaf-${version}.yml`, method: 'get' })
   const [schema, setSchema] = useState<Schema>()
 
   useEffect(() => {
@@ -69,12 +66,20 @@ function useFreshAfSchema() {
   return { schema, error }
 }
 
-export default function useFreshAf(): UseFreshAf {
+export default function useFreshAf({ projectId }: { projectId: string }): UseFreshAf {
   const { schema } = useFreshAfSchema()
   const [answered, setAnswered] = useState<Set<string>>(new Set())
   const [answers, setAnswers] = useState<Answer[]>([])
   const [scores, setScores] = useState(startingScores)
   const [questionsById, setQuestionsById] = useState<Record<string, Question>>()
+  const { project } = useGetProject(projectId)
+
+  // Load answers initially from the API
+  useEffect(() => {
+    if (project?.answers) {
+      setAnswers(project?.answers)
+    }
+  }, [project?.answers])
 
   // Populate the mapping in questionsById
   useEffect(() => {
@@ -94,17 +99,20 @@ export default function useFreshAf(): UseFreshAf {
         const newScores: Scores = { ...startingScores }
         for (const category of categories) {
           let total = 0
-          await Promise.all(answers.map(async (ans) => {
-            const question = questionsById[ans.questionId]
-            if (question && question.points[category]) {
-              total += question.points[category]
-            }
-          }))
+          await Promise.all(answers
+            .filter(ans => ans.answer !== 'no')
+            .map(async (ans) => {
+              const question = questionsById[ans.questionId]
+              if (question && question.points[category]) {
+                total += question.points[category]
+              }
+            }))
           newScores[category] = {
             total,
             ...highestThresholdPassed(schema.thresholds[category], total)
           }
         }
+        console.log(newScores)
         setScores(newScores)
       })()
     }
@@ -115,24 +123,26 @@ export default function useFreshAf(): UseFreshAf {
     answers,
     scores,
 
-    addAnswer: useCallback((answer: Answer) => {
+    setAnswer(answer: Answer) {
       setAnswers(answers => [...answers.filter(ans => ans.questionId !== answer.questionId), answer])
-      setAnswered(a => {
-        a.add(answer.questionId)
-        return a
+      setAnswered(answered => {
+        if (answer.answer === 'yes' || answer.answer === 'n/a') {
+          answered.add(answer.questionId)
+        } else {
+          answered.delete(answer.questionId)
+        }
+        return answered
       })
-    }, [setAnswers]),
+    },
 
-    deleteAnswer: useCallback((questionId: string) => {
-      setAnswers(answers => answers.filter(ans => ans.questionId !== questionId))
-      setAnswered(a => {
-        a.delete(questionId)
-        return a
-      })
-    }, [setAnswers]),
-
-    isAnswered: useCallback((questionId: string) => {
+    isAnswered(questionId: string) {
       return answered.has(questionId)
-    },[answered])
+    },
+
+    async saveAnswers() {
+      if (project) {
+        await saveProject({ ...project, answers })
+      }
+    },
   }
 }

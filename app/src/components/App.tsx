@@ -6,12 +6,6 @@ import LeftBar from './LeftBar';
 import ProjectPage from './ProjectPage';
 
 const useStyles = makeStyles((theme) => ({
-  leftBar: {
-    width: "300px",
-    padding: theme.spacing(1),
-    display: "flex",
-    flexDirection: "column"
-  },
   content: {
     width: "100%",
     padding: theme.spacing(1)

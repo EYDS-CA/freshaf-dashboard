@@ -1,7 +1,8 @@
 import useAxios from "axios-hooks"
 import yaml from 'js-yaml'
 import { useEffect, useState } from "react"
-import { Answer, saveProject, useGetProject } from "./projects"
+import { Answer, isEmptyAnswer, saveProject, useGetProject } from "./projects"
+import deepEqual from 'deep-equal'
 
 const version = '0.1'
 
@@ -26,10 +27,11 @@ export interface UseFreshAf {
   answers: Answer[]
   schema?: Schema
   scores: Scores
+  hasUnsavedChanges: boolean
 
   setAnswer(answer: Answer): void
-  isAnswered(questionId: string): boolean
-  saveAnswers(): Promise<void>
+  getAnswer(questionId: string): Answer
+  saveChanges(): Promise<void>
 }
 
 const startingScores: Scores = {
@@ -68,18 +70,43 @@ function useFreshAfSchema(): { schema?: Schema, error?: Error } {
 
 export default function useFreshAf({ projectId }: { projectId: string }): UseFreshAf {
   const { schema } = useFreshAfSchema()
-  const [answered, setAnswered] = useState<Set<string>>(new Set())
+  const [answersById, setAnswersById] = useState<Record<string, Answer>>({})
   const [answers, setAnswers] = useState<Answer[]>([])
   const [scores, setScores] = useState(startingScores)
   const [questionsById, setQuestionsById] = useState<Record<string, Question>>()
-  const { project } = useGetProject(projectId)
+  const [unsaved, setUnsaved] = useState<boolean>(false)
+  const { project, refetch } = useGetProject(projectId)
 
   // Load answers initially from the API
   useEffect(() => {
-    if (project?.answers) {
-      setAnswers(project?.answers)
+    if (project) {
+      setAnswers(project.answers)
+      const byId: Record<string, Answer> = {}
+      for (const ans of project.answers) {
+        byId[ans.questionId] = ans
+      }
+      setAnswersById(byId)
     }
-  }, [project?.answers])
+  }, [project])
+
+  // Are there any unsaved changes?
+  useEffect(() => {
+    if (project) {
+      if (answers.length !== project.answers.length) {
+        setUnsaved(true)
+      } else {
+        let foundChange = false
+        for (const savedAnswer of project.answers) {
+          const newAnswer = answersById[savedAnswer.questionId]
+          if (!deepEqual(savedAnswer, newAnswer)) {
+            foundChange = true
+            break
+          }
+        }
+        setUnsaved(foundChange)
+      }
+    }
+  }, [answers, answersById, project])
 
   // Populate the mapping in questionsById
   useEffect(() => {
@@ -112,7 +139,6 @@ export default function useFreshAf({ projectId }: { projectId: string }): UseFre
             ...highestThresholdPassed(schema.thresholds[category], total)
           }
         }
-        console.log(newScores)
         setScores(newScores)
       })()
     }
@@ -122,26 +148,35 @@ export default function useFreshAf({ projectId }: { projectId: string }): UseFre
     schema,
     answers,
     scores,
+    hasUnsavedChanges: unsaved,
 
     setAnswer(answer: Answer) {
-      setAnswers(answers => [...answers.filter(ans => ans.questionId !== answer.questionId), answer])
-      setAnswered(answered => {
-        if (answer.answer === 'yes' || answer.answer === 'n/a') {
-          answered.add(answer.questionId)
+      setAnswers(answers => {
+        const filtered = [...answers.filter(ans => ans.questionId !== answer.questionId)]
+        if (isEmptyAnswer(answer)) {
+          return filtered
         } else {
-          answered.delete(answer.questionId)
+          return [...filtered, answer]
         }
-        return answered
+      })
+      setAnswersById(byId => {
+        if (isEmptyAnswer(answer)) {
+          delete byId[answer.questionId]
+        } else {
+          byId[answer.questionId] = answer
+        }
+        return byId
       })
     },
 
-    isAnswered(questionId: string) {
-      return answered.has(questionId)
+    getAnswer(questionId: string) {
+      return answersById[questionId] || { questionId, answer: 'no' }
     },
 
-    async saveAnswers() {
+    async saveChanges() {
       if (project) {
         await saveProject({ ...project, answers })
+        await refetch()
       }
     },
   }

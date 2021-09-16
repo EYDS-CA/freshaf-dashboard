@@ -1,6 +1,18 @@
 import { nanoid } from "nanoid"
+import { useEffect, useState } from "react"
 
-const projectStore: Record<string, Project> = {}
+const projectStore: Record<string, Project> = {
+  a: { 
+    name: 'HCAP',
+    id: 'a',
+    answers: []
+  },
+  b: { 
+    name: 'LTC',
+    id: 'b',
+    answers: []
+  }
+}
 
 export interface Answer {
   questionId: string,
@@ -8,9 +20,10 @@ export interface Answer {
   comment?: string
 }
 
-export interface UseProject {
+export interface UseGetProject {
   error?: Error
   project?: Project
+  refetch(): Promise<void>
 }
 
 export interface ProjectSummary {
@@ -20,6 +33,10 @@ export interface ProjectSummary {
 
 export interface Project extends ProjectSummary {
   answers: Answer[]
+}
+
+export function isEmptyAnswer(answer: Answer): boolean {
+  return answer.answer === 'no' && !answer.comment
 }
 
 export async function createProject(name: string): Promise<Project> {
@@ -36,25 +53,29 @@ export async function saveProject(project: Project): Promise<void> {
   projectStore[project.id] = project
 }
 
-export function useGetProject(projectId: string): UseProject {
+export function useGetProject(projectId: string): UseGetProject {
+  const [ project, setProject ] = useState(projectStore[projectId])
+
+  useEffect(() => {
+    setProject(projectStore[projectId])
+  }, [projectId])
+
   return {
-    project: projectStore[projectId]
+    project,
+    
+    async refetch() {
+      setProject({ ...projectStore[projectId] })
+    }
   }
 }
 
-export interface UseProjectSummaries {
+export interface UseGetProjectSummaries {
   projects?: ProjectSummary[],
   error?: Error
 }
 
-export function useGetProjectSummaries(): UseProjectSummaries {
+export function useGetProjectSummaries(): UseGetProjectSummaries {
   return {
-    projects: [{
-      id: 'a',
-      name: 'HCAP'
-    }, {
-      id: 'b',
-      name: 'LTC'
-    }]
+    projects: Object.values(projectStore)
   }
 }

@@ -1,4 +1,5 @@
-import { Box, Button, Link, makeStyles, Typography } from "@material-ui/core";
+import { Box, Button, makeStyles, Typography } from "@material-ui/core";
+import { useHistory } from "react-router-dom";
 import { ProjectSummary } from "../hooks/projects";
 
 const useStyles = makeStyles((theme) => ({
@@ -12,13 +13,16 @@ const useStyles = makeStyles((theme) => ({
 
 export default function LeftBar({ projects }: { projects: ProjectSummary[] }) {
   const classes = useStyles();
-  
+  const history = useHistory();
+
   return (<Box className={classes.leftBar}>
       <Typography>
         Projects
       </Typography>
       {projects?.map((project) => {
-        return <Link href={`/project/${project.id}`}><Button>{project.name}</Button></Link>
+        return <Button 
+          onClick={() => history.push(`/project/${project.id}`)} 
+          key={project.id}>{project.name}</Button>
       })}
     </Box>)
 }

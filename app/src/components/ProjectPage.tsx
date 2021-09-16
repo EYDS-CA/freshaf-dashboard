@@ -1,9 +1,10 @@
-import { Accordion, AccordionDetails, AccordionSummary, Box, Checkbox, FormControlLabel, makeStyles, Paper, TextField, Typography } from "@material-ui/core";
+import { Accordion, AccordionDetails, AccordionSummary, Box, Checkbox, Fab, FormControlLabel, makeStyles, Paper, TextField, Typography } from "@material-ui/core";
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import React from "react";
 import { useParams } from "react-router-dom";
 import { titleCase } from 'title-case';
 import useFreshAf, { categories, Level } from "../hooks/freshaf";
+import { Save as SaveIcon } from '@material-ui/icons'
 
 const useStyles = makeStyles((theme) => ({
   question: {
@@ -13,6 +14,11 @@ const useStyles = makeStyles((theme) => ({
   },
   progressBar: {
     margin: theme.spacing(1)
+  },
+  saveButton: {
+    position: 'fixed',
+    bottom: theme.spacing(2),
+    right: theme.spacing(2)
   },
   header: {
     display: "flex",
@@ -43,15 +49,22 @@ export default function ProjectPage() {
   const { 
     scores, 
     schema, 
-    isAnswered,
-    setAnswer } = useFreshAf({ projectId })
+    hasUnsavedChanges,
+    getAnswer,
+    setAnswer,
+    saveChanges } = useFreshAf({ projectId })
 
   return (
     <Box className={classes.root}>
+      { !hasUnsavedChanges
+        ? <></>
+        : <Fab color="primary" className={classes.saveButton} onClick={() => saveChanges()}>
+            <SaveIcon />
+          </Fab> }
       <Paper className={classes.header}>
         {categories.map((category) => {
           const { total, level, nextThreshold } = scores[category]
-          return (<Box className={classes.headerItem}>
+          return (<Box className={classes.headerItem} key={category}>
             <Typography variant="h6">
               {icons[level]} {titleCase(category)} ({total}{nextThreshold ? ` / ${nextThreshold})` : ')'}
             </Typography>
@@ -60,7 +73,8 @@ export default function ProjectPage() {
       </Paper>
     { !schema ? null
       : schema.questions.map((question) => {
-        return <Accordion className={classes.question}>
+        console.log(getAnswer(question.id).answer === 'yes')
+        return <Accordion className={classes.question} key={`${projectId}/${question.id}`}>
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}>
             <FormControlLabel 
@@ -69,7 +83,7 @@ export default function ProjectPage() {
               control={
                 <Checkbox 
                   color="primary"
-                  checked={isAnswered(question.id)}
+                  checked={getAnswer(question.id).answer === 'yes'}
                   onChange={(event) => {
                     if (event.target.checked) {
                       setAnswer({ questionId: question.id, answer: 'yes' })

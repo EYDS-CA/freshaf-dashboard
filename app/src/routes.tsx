@@ -7,7 +7,7 @@ export const AFRoutes = Object.freeze({
   Project: "/pages/project/:projectId",
 });
 
-const ProjectPage = lazy(() => import("./pages/ProjectPage/ProjectPage"));
+const ProjectPage = lazy(() => import("./pages/ProjectPage"));
 
 /**
  * All available routes.

@@ -1,6 +1,6 @@
 import { Box, Button, makeStyles, Typography } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
-import { ProjectSummary } from "../hooks/projects";
+import { ProjectSummary } from "../../hooks/projects";
 
 const useStyles = makeStyles((theme) => ({
   leftBar: {

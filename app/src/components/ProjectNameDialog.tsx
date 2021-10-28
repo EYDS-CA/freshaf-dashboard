@@ -1,8 +1,16 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from "@material-ui/core";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  TextField,
+} from "@material-ui/core";
 import { useState } from "react";
 
-export default function ProjectNameDialog({ open }: { open: boolean }) {
-  const [open, setOpen] = useState(false);
+export const ProjectNameDialog = () => {
+  const [open, setOpen] = useState<boolean>(false);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -14,12 +22,16 @@ export default function ProjectNameDialog({ open }: { open: boolean }) {
 
   return (
     <div>
-      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="form-dialog-title"
+      >
         <DialogTitle id="form-dialog-title">Subscribe</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            To subscribe to this website, please enter your email address here. We will send updates
-            occasionally.
+            To subscribe to this website, please enter your email address here.
+            We will send updates occasionally.
           </DialogContentText>
           <TextField
             autoFocus
@@ -34,11 +46,13 @@ export default function ProjectNameDialog({ open }: { open: boolean }) {
           <Button onClick={handleClose} color="primary">
             Cancel
           </Button>
-          <Button onClick={handleClose} color="primary">
+          <Button onClick={handleClickOpen} color="primary">
             Subscribe
           </Button>
         </DialogActions>
       </Dialog>
     </div>
   );
-}
+};
+
+export default ProjectNameDialog;

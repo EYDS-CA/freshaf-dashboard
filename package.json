@@ -1,0 +1,10 @@
+{
+  "name": "freshaf-dashboard",
+  "version": "1.0.0",
+  "description": "API/Front end app for FreashAF Dashboard project",
+  "main": "index.js",
+  "repository": "https://github.com/FreshworksStudio/freshaf-dashboard.git",
+  "author": "fwpushan <pushan@freshworks.io>",
+  "license": "MIT",
+  "private": false
+}

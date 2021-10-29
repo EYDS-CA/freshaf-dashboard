@@ -10,6 +10,7 @@ import {
 } from 'aws-lambda';
 import { AppModule } from './app.module';
 import { ExpressAdapter } from '@nestjs/platform-express';
+import { API_PREFIX } from './main';
 
 let cachedServer: Handler;
 
@@ -20,6 +21,8 @@ async function bootstrap() {
     const nestApp = await NestFactory.create(
       AppModule,
       new ExpressAdapter(expressApp));
+
+    nestApp.setGlobalPrefix(API_PREFIX);
 
     await nestApp.init();
     

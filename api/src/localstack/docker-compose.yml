@@ -10,7 +10,7 @@ services:
       - '127.0.0.1:4566:4566'
       - '127.0.0.1:4571:4571'
     environment:
-      - SERVICES=serverless,cognito,rds,sqs,sns,cloudformation
+      - SERVICES=serverless
       - DEBUG=1
       - DATA_DIR=/tmp/localstack/data
       - HOST_TMP_FOLDER=${TMPDIR:-/tmp/}localstack

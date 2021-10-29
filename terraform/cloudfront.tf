@@ -18,6 +18,7 @@ data "aws_cloudfront_cache_policy" "disabled" {
 }
 
 data "aws_acm_certificate" "domain" {
+  count    = local.has_domain ? 1 : 0
   provider = aws.us-east-1
   domain   = var.domain
   statuses = ["ISSUED"]
@@ -56,7 +57,7 @@ resource "aws_s3_bucket" "app_logs" {
 resource "aws_cloudfront_distribution" "app" {
   comment = local.app_name
 
-  aliases = [var.domain, "www.${var.domain}"]
+  aliases = local.has_domain ? [var.domain, "www.${var.domain}"] : []
 
   
 
@@ -176,11 +177,11 @@ resource "aws_cloudfront_distribution" "app" {
   }
 
   viewer_certificate {
-    cloudfront_default_certificate = false
+    cloudfront_default_certificate = local.has_domain ? false : true
 
-    acm_certificate_arn      = data.aws_acm_certificate.domain[0].arn
-    minimum_protocol_version = "TLSv1.2_2019"
-    ssl_support_method       = "sni-only"
+    acm_certificate_arn      = local.has_domain ? data.aws_acm_certificate.domain[0].arn : null
+    minimum_protocol_version = local.has_domain ? "TLSv1.2_2019" : null
+    ssl_support_method       = local.has_domain ? "sni-only" : null
   }
 
   custom_error_response {

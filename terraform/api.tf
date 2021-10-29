@@ -12,7 +12,6 @@ resource "aws_lambda_function" "api" {
   environment {
     variables = {
       NODE_ENV           = var.target_env
-      AWS_S3_BUCKET      = aws_s3_bucket.uploads.bucket
       AWS_S3_REGION      = var.region
     }
   }

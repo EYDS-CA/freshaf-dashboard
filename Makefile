@@ -8,14 +8,18 @@ export AWS_REGION ?= ca-central-1
 
 TERRAFORM_DIR = terraform
 export BOOTSTRAP_ENV=terraform/bootstrap
+CLOUDFRONT_ID=EXVZ3ZKC7MOZG
 
 
 ifeq ($(ENV_NAME), dev)
-DOMAIN=dev.af.freshworks.club
+#DOMAIN=dev.af.freshworks.club
+DOMAIN=
+CLOUDFRONT_ID=EXVZ3ZKC7MOZG
 endif
 
 ifeq ($(ENV_NAME), prod)
 DOMAIN=af.freshworks.club
+CLOUDFRONT_ID=
 endif
 
 define TFVARS_DATA
@@ -71,15 +75,39 @@ plan: init-tf
 	# Creating all AWS infrastructure.
 	@terraform -chdir=$(TERRAFORM_DIR) plan
 
+deploy-api: init-tf 
+	# Creating all AWS infrastructure.
+	@terraform -chdir=$(TERRAFORM_DIR) apply -auto-approve -input=false
+
+deploy-app:
+	aws s3 sync ./terraform/build/app s3://$(APP_SRC_BUCKET) --delete
+	aws --region $(AWS_REGION) cloudfront create-invalidation --distribution-id $(CLOUDFRONT_ID) --paths "/*"
+
+deploy: deploy-api deploy-app
+
 ## Application stack building
 pre-build:
 	mkdir -p ./terraform/build
 
-build-prod-app: pre-build
+build-api: pre-build
+	rm -r ./api/node_modules ./api/yarn.lock ./api/build ./terraform/build/api.zip || true
+	SHARP_IGNORE_GLOBAL_LIBVIPS=1 yarn --cwd ./api --production
+	mkdir -p ./api/build/node_modules
+	mv ./api/node_modules ./api/build
+	SHARP_IGNORE_GLOBAL_LIBVIPS=1 yarn --cwd ./api
+	yarn --cwd ./api run build
+	mv ./api/dist/* ./api/build
+	cd ./api/build && zip -rq ../../terraform/build/api.zip *
+
+build-app: pre-build
 	rm -r ./terraform/build/app || true
 	yarn --cwd ./app
-	yarn --cwd ./app run export
-	mv ./app/out ./terraform/build/app
+	yarn --cwd ./app run build
+	mv ./app/build ./terraform/build/app
+
+build-all: build-api build-app
+
+build-and-deploy: build-all deploy
 
 
 

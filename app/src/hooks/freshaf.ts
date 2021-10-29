@@ -3,6 +3,7 @@ import yaml from 'js-yaml';
 import { useEffect, useState } from 'react';
 import { Answer, isEmptyAnswer, saveProject, useGetProject } from './projects';
 import deepEqual from 'deep-equal';
+import rawYAML from '../constants/freshaf-2.0.yml';
 
 const version = '0.1';
 
@@ -86,11 +87,10 @@ function highestThresholdPassed(
 
 function useFreshAfSchema(): { schema?: Schema; error?: Error } {
   const [{ data: freshAfRaw, error }] = useAxios<string>({
-    url: `/freshaf-${version}.yml`,
+    url: rawYAML,
     method: 'get',
   });
   const [schema, setSchema] = useState<Schema>();
-
   useEffect(() => {
     if (freshAfRaw) {
       const schema = yaml.load(freshAfRaw) as Schema;

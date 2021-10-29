@@ -21,7 +21,7 @@ export class ProjectController {
     return await this.projectService.createOrUpdateProject(project);
   }
 
-  @Get('/health')
+  @Get('/health/check')
   getHealth(): string {
     return "I am fine, thank you for asking"
   }

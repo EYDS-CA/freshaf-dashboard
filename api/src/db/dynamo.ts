@@ -1,7 +1,7 @@
 import * as AWS from 'aws-sdk';
 
 const awsConfigParams = {
-  region: process.env.AWS_DEFAULT_REGION || 'us-east-1',
+  region: process.env.AWS_DEFAULT_REGION,
 };
 if (process.env.AWS_ACCESS_KEY_ID) {
   awsConfigParams['accessKeyId'] = process.env.AWS_ACCESS_KEY_ID;
@@ -14,5 +14,5 @@ AWS.config.update(awsConfigParams);
 
 const dynamoClient = new AWS.DynamoDB.DocumentClient();
 
-export const TABLE_NAME = process.env.DYNAMO_TABLE_NAME || 'freshaf-dashboard';
+export const TABLE_NAME = process.env.DYNAMO_TABLE_NAME;
 export default dynamoClient;

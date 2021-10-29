@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import serverlessExpress from '@vendia/serverless-express';
-import express from 'express';
+import * as express from 'express';
 import {
   APIGatewayProxyEvent,
   APIGatewayProxyResult,
@@ -34,6 +34,6 @@ export const handler: Handler = async (
   context: Context,
   callback: Callback,
 ): Promise<APIGatewayProxyResult> => {
-  cachedServer = await bootstrap();
+  const cachedServer = await bootstrap();
   return cachedServer(event, context, callback);
 };

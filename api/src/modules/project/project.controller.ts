@@ -10,4 +10,9 @@ export class ProjectController {
   getProjects(): Project[] {
     return this.projectService.getProjects();
   }
+
+  @Get('/health')
+  getHealth(): string {
+    return "I am fine, thank you for asking"
+  }
 }

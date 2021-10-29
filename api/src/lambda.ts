@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import serverlessExpress from '@vendia/serverless-express';
-import * as express from 'express';
+import express from 'express';
 import {
   APIGatewayProxyEvent,
   APIGatewayProxyResult,

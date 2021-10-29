@@ -9,6 +9,9 @@ if (process.env.AWS_ACCESS_KEY_ID) {
 if (process.env.AWS_SECRET_ACCESS_KEY) {
   awsConfigParams['secretAccessKey'] = process.env.AWS_SECRET_ACCESS_KEY;
 }
+if (process.env.AWS_SESSION_TOKEN) {
+  awsConfigParams['sessionToken'] = process.env.AWS_SESSION_TOKEN;
+}
 
 AWS.config.update(awsConfigParams);
 

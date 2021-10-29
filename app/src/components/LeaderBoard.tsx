@@ -3,6 +3,8 @@ import { makeStyles } from "@material-ui/core";
 import { withStyles } from "@material-ui/styles";
 import React, { useState } from "react";
 import { LeaderBoardTabs } from "../constants/enums/enums";
+import LeaderBoardTable from "./generic/LeaderBoardTable";
+import { StyledButton } from "./generic/StyledButton";
 
 const useStyles = makeStyles((theme) => ({
   header: {
@@ -36,18 +38,37 @@ function LeaderBoard() {
   );
   const classes = useStyles();
 
-  const handleChange = (e: React.ChangeEvent<{}>, newValue: LeaderBoardTabs) => {
-      setCurrentTab(newValue);
-  }
+  const handleChange = (
+    e: React.ChangeEvent<{}>,
+    newValue: LeaderBoardTabs
+  ) => {
+    setCurrentTab(newValue);
+  };
   return (
     <Box marginY={2}>
       <Typography className={classes.header}>LEADERBOARD</Typography>
       <AppBar position="static" className={classes.appbar}>
         <StyledTab value={currentTab} onChange={handleChange}>
-          <Tab className={classes.tab} value={LeaderBoardTabs.Project} label={LeaderBoardTabs.Project} />
-          <Tab className={classes.tab} value={LeaderBoardTabs.Developer} label={LeaderBoardTabs.Developer} />
+          <Tab
+            className={classes.tab}
+            value={LeaderBoardTabs.Project}
+            label={LeaderBoardTabs.Project}
+          />
+          <Tab
+            className={classes.tab}
+            value={LeaderBoardTabs.Developer}
+            label={LeaderBoardTabs.Developer}
+          />
         </StyledTab>
       </AppBar>
+      <Box marginY={2}>
+        <LeaderBoardTable data={[{ name: "LTC", value: 1200 }]} />
+      </Box>
+      <Box display='flex' justifyContent='center'>
+        <StyledButton variant={'save'} style={{background: 'none'}}>
+          Show more
+        </StyledButton>
+      </Box>
     </Box>
   );
 }

@@ -73,7 +73,7 @@ function ProjectRating() {
       <Typography className={classes.creatorText}>
         Last Updated: {""}
       </Typography>
-      <Box marginY={2}>
+      <Box marginY={2} display='flex' justifyContent='center'>
         <StyledButton variant="save">Save</StyledButton>
       </Box>
       <LeaderBoard />

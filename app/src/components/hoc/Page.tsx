@@ -4,7 +4,7 @@ import { LinearProgress } from "@material-ui/core";
 import { NavBar, Wrapper } from "..";
 
 const Page = (props: any) => {
-  const { children, isFetching, container, isBusy, wrapperClasses } = props;
+  const { children, isFetching, container, isBusy, wrapperClasses, showNavBar } = props;
   const content = isFetching ? <LinearProgress /> : children;
 
   useEffect(() => {
@@ -23,7 +23,7 @@ const Page = (props: any) => {
     <Wrapper    
       isFetching={isFetching}
       isBusy={isBusy}
-      navBar={navBar}
+      navBar={showNavBar ? navBar : <></>}
       container={container}
       classes={wrapperClasses}
     >

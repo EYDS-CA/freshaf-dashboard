@@ -25,7 +25,8 @@ const Wrapper = ({
 }): React.ReactElement => {
   const myClasses = useStyles();
   return (
-    <div>
+    <>
+    <Box>
       {navBar}
       <Box
         className={clsx(myClasses.body, classes?.wrapperBody, "wrapper")}
@@ -41,7 +42,8 @@ const Wrapper = ({
       </Box>
 
       <Overlay loading={isBusy} />
-    </div>
+    </Box>
+    </>
   );
 };
 

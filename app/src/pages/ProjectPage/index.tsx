@@ -1,13 +1,13 @@
 import { Box, makeStyles } from "@material-ui/core";
 import React from "react";
 import { LeftBar, Page } from "../../components";
+import Header from "../../components/generic/Header";
 import { useGetProjectSummaries } from "../../hooks/projects";
 import ProjectForm from "./ProjectForm";
 
 const useStyles = makeStyles((theme) => ({
   content: {
     width: "100%",
-    padding: theme.spacing(1),
   },
 }));
 
@@ -17,8 +17,9 @@ const ProjectPage = () => {
 
   return (
     <div>
-      <Page isFetching={false}>
-        <Box display="flex">
+      <Header />
+      <Page container={false} isFetching={false}>
+        <Box display="flex" minHeight='calc(100vh - 58px)'>
           <LeftBar projects={projects || []} />
           <Box className={classes.content}>
             <ProjectForm />;

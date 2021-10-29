@@ -1,6 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import dynamoClient, { TABLE_NAME } from 'src/db/dynamo';
 import { ProjectDto } from './project.dto';
+import { nanoid } from 'nanoid';
 
 @Injectable()
 export class ProjectService {
@@ -11,13 +16,17 @@ export class ProjectService {
     return response?.Items.map((projectItem) => projectItem.resource) || [];
   }
 
-  async getProjectByName(name: string) {
+  async getProjectById(id: string) {
+    if (!id) {
+      throw new BadRequestException();
+    }
+
     const response = await dynamoClient
       .get({
         TableName: TABLE_NAME,
         Key: {
-          PK: `PRO#${name}`,
-          SK: `#METADATA#${name}`,
+          PK: `PRO#${id}`,
+          SK: `#METADATA#${id}`,
         },
       })
       .promise();
@@ -30,16 +39,26 @@ export class ProjectService {
   }
 
   async createOrUpdateProject(project: ProjectDto) {
-    const response = await dynamoClient
+    if (!project) {
+      throw new BadRequestException();
+    }
+
+    if (!project.id) {
+      // Existing Project
+      project.id = nanoid();
+      project.created_at = new Date().toISOString();
+    }
+    project.updated_at = new Date().toISOString();
+
+    await dynamoClient
       .put({
         TableName: TABLE_NAME,
         Item: {
-          PK: `PRO#${project.name}`,
-          SK: `#METADATA#${project.name}`,
+          PK: `PRO#${project.id}`,
+          SK: `#METADATA#${project.id}`,
           resource: project,
         },
       })
       .promise();
-    return response;
   }
 }

@@ -11,9 +11,9 @@ export class ProjectController {
     return await this.projectService.getAllProjects();
   }
 
-  @Get(':projectName')
-  async getProjectByName(@Param('projectName') projectName: string) {
-    return await this.projectService.getProjectByName(projectName);
+  @Get(':id')
+  async getProjectById(@Param('id') projectId: string) {
+    return await this.projectService.getProjectById(projectId);
   }
 
   @Post()

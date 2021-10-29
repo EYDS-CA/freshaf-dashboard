@@ -1,10 +1,15 @@
-class Question {
+class Answer {
   readonly id;
-  readonly text;
+  readonly question;
   readonly answer;
 }
 
 export class ProjectDto {
+  id: string;
   readonly name: string;
-  readonly questions: Array<Question>;
+  readonly answers: Array<Answer>;
+  created_at: string;
+  updated_at: string;
+  created_by: string;
+  updated_by: string;
 }

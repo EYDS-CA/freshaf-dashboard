@@ -26,20 +26,20 @@ const Wrapper = ({
   const myClasses = useStyles();
   return (
     <>
-    <Box>
-      {navBar}
-      <Box className={clsx(myClasses.body, classes?.wrapperBody, 'wrapper')} pb={4}>
-        {container ? (
-          <Container maxWidth="lg" className={'root-container'}>
-            {children}
-          </Container>
-        ) : (
-          <>{children}</>
-        )}
-      </Box>
+      <Box>
+        {navBar}
+        <Box className={clsx(myClasses.body, classes?.wrapperBody, 'wrapper')} pb={4}>
+          {container ? (
+            <Container maxWidth="lg" className={'root-container'}>
+              {children}
+            </Container>
+          ) : (
+            <>{children}</>
+          )}
+        </Box>
 
-      <Overlay loading={isBusy} />
-    </Box>
+        <Overlay loading={isBusy} />
+      </Box>
     </>
   );
 };

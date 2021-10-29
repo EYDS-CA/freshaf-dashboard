@@ -1,14 +1,14 @@
-import { Box, makeStyles, Paper, TextField } from "@material-ui/core";
-import React from "react";
-import SearchIcon from "@material-ui/icons/Search";
-import Autocomplete from "@material-ui/lab/Autocomplete";
-import { withStyles } from "@material-ui/styles";
+import { Box, makeStyles, Paper, TextField } from '@material-ui/core';
+import React from 'react';
+import SearchIcon from '@material-ui/icons/Search';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import { withStyles } from '@material-ui/styles';
 
 const CssTextField = withStyles({
   root: {
-    "& .MuiOutlinedInput-root": {
-      "& fieldset": {
-        border: "none",
+    '& .MuiOutlinedInput-root': {
+      '& fieldset': {
+        border: 'none',
       },
     },
   },
@@ -16,37 +16,37 @@ const CssTextField = withStyles({
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    margin: "0px",
-    padding: "8px",
-    paddingLeft: "40px",
-    fontSize: "16px",
-    backgroundColor: "#F0F1F3",
-    borderRadius: "5px",
+    margin: '0px',
+    padding: '8px',
+    paddingLeft: '40px',
+    fontSize: '16px',
+    backgroundColor: '#F0F1F3',
+    borderRadius: '5px',
   },
   icon: {
     zIndex: 1,
-    marginTop: "3px",
+    marginTop: '3px',
   },
   noborder: {
-    textDecoration: "none",
-    backgroundColor: "red",
-    border: "white",
+    textDecoration: 'none',
+    backgroundColor: 'red',
+    border: 'white',
   },
   popper: {
-    marginTop: "-10px",
+    marginTop: '-10px',
     zIndex: 3000,
-    overflowY: "hidden",
-    maxHeight: "300px",
-    marginLeft: "10px",
-    marginRight: "10px",
+    overflowY: 'hidden',
+    maxHeight: '300px',
+    marginLeft: '10px',
+    marginRight: '10px',
   },
   wrapper: {
-    marginLeft: "-40px",
-    width: "100%",
+    marginLeft: '-40px',
+    width: '100%',
   },
 }));
 
-//Custom Popper
+// Custom Popper
 const CustomPopper = function (props: any) {
   const classes = useStyles();
   return <Paper {...props} className={classes.popper} />;
@@ -54,7 +54,7 @@ const CustomPopper = function (props: any) {
 
 function SearchBar() {
   const classes = useStyles();
-  const data = ["a", "b", "c", "d", "e", "f", "g", "h", "i"];
+  const data = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i'];
   const defaultProps = {
     options: data,
     getOptionLabel: (option: any) => option,
@@ -80,7 +80,7 @@ function SearchBar() {
               }}
             />
           )}
-          ListboxProps={{ style: { overflow: "hidden" } }}
+          ListboxProps={{ style: { overflow: 'hidden' } }}
         />
       </Box>
     </Box>

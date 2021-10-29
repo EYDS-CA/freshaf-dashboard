@@ -1,11 +1,11 @@
-import { Box, makeStyles, Typography } from "@material-ui/core";
-import React from "react";
+import { Box, makeStyles, Typography } from '@material-ui/core';
+import React from 'react';
 
 const useStyles = makeStyles((theme) => ({
   row: {
-    fontSize: "16px",
-    lineHeight: "19px",
-    color: "#000000",
+    fontSize: '16px',
+    lineHeight: '19px',
+    color: '#000000',
   },
 }));
 
@@ -19,12 +19,17 @@ interface LeaderBoardTableProp {
 }
 
 function LeaderBoardTable({ data }: LeaderBoardTableProp) {
-    const classes = useStyles()
+  const classes = useStyles();
   return (
     <Box>
       {data?.map((row) => {
         return (
-          <Box display="flex" justifyContent="space-between" className={classes.row}>
+          <Box
+            key={row.value}
+            display="flex"
+            justifyContent="space-between"
+            className={classes.row}
+          >
             <Typography>{row.name}</Typography>
             <Typography>{row.value}</Typography>
           </Box>

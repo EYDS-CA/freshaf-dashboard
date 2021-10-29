@@ -1,81 +1,81 @@
-import { nanoid } from "nanoid"
-import { useEffect, useState } from "react"
+import { nanoid } from 'nanoid';
+import { useEffect, useState } from 'react';
 
 const projectStore: Record<string, Project> = {
-  a: { 
+  a: {
     name: 'HCAP',
     id: 'a',
-    answers: []
+    answers: [],
   },
-  b: { 
+  b: {
     name: 'LTC',
     id: 'b',
-    answers: []
-  }
-}
+    answers: [],
+  },
+};
 
 export interface Answer {
-  questionId: string,
-  answer: 'yes' | 'no' | 'n/a',
-  comment?: string
+  questionId: string;
+  answer: 'yes' | 'no' | 'n/a';
+  comment?: string;
 }
 
 export interface UseGetProject {
-  error?: Error
-  project?: Project
-  refetch(): Promise<void>
+  error?: Error;
+  project?: Project;
+  refetch(): Promise<void>;
 }
 
 export interface ProjectSummary {
-  id: string
-  name: string
+  id: string;
+  name: string;
 }
 
 export interface Project extends ProjectSummary {
-  answers: Answer[]
+  answers: Answer[];
 }
 
 export function isEmptyAnswer(answer: Answer): boolean {
-  return answer.answer === 'no' && !answer.comment
+  return answer.answer === 'no' && !answer.comment;
 }
 
 export async function createProject(name: string): Promise<Project> {
-  const id = nanoid()
+  const id = nanoid();
   projectStore[id] = {
     id,
     name,
-    answers: []
-  }
-  return projectStore[id]
+    answers: [],
+  };
+  return projectStore[id];
 }
 
 export async function saveProject(project: Project): Promise<void> {
-  projectStore[project.id] = project
+  projectStore[project.id] = project;
 }
 
 export function useGetProject(projectId: string): UseGetProject {
-  const [ project, setProject ] = useState(projectStore[projectId])
+  const [project, setProject] = useState(projectStore[projectId]);
 
   useEffect(() => {
-    setProject(projectStore[projectId])
-  }, [projectId])
+    setProject(projectStore[projectId]);
+  }, [projectId]);
 
   return {
     project,
-    
+
     async refetch() {
-      setProject({ ...projectStore[projectId] })
-    }
-  }
+      setProject({ ...projectStore[projectId] });
+    },
+  };
 }
 
 export interface UseGetProjectSummaries {
-  projects?: ProjectSummary[],
-  error?: Error
+  projects?: ProjectSummary[];
+  error?: Error;
 }
 
 export function useGetProjectSummaries(): UseGetProjectSummaries {
   return {
-    projects: Object.values(projectStore)
-  }
+    projects: Object.values(projectStore),
+  };
 }

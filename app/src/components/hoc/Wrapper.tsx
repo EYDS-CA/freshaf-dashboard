@@ -1,8 +1,8 @@
-import React from "react";
-import PropTypes from "prop-types";
-import clsx from "clsx";
-import { Overlay } from "..";
-import { Box, Container, makeStyles } from "@material-ui/core";
+import React from 'react';
+import PropTypes from 'prop-types';
+import clsx from 'clsx';
+import { Overlay } from '..';
+import { Box, Container, makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   body: {},
@@ -26,23 +26,20 @@ const Wrapper = ({
   const myClasses = useStyles();
   return (
     <>
-    <Box>
-      {navBar}
-      <Box
-        className={clsx(myClasses.body, classes?.wrapperBody, "wrapper")}
-        pb={4}
-      >
-        {container ? (
-          <Container maxWidth="lg" className={"root-container"}>
-            {children}
-          </Container>
-        ) : (
-          <>{children}</>
-        )}
-      </Box>
+      <Box>
+        {navBar}
+        <Box className={clsx(myClasses.body, classes?.wrapperBody, 'wrapper')} pb={4}>
+          {container ? (
+            <Container maxWidth="lg" className={'root-container'}>
+              {children}
+            </Container>
+          ) : (
+            <>{children}</>
+          )}
+        </Box>
 
-      <Overlay loading={isBusy} />
-    </Box>
+        <Overlay loading={isBusy} />
+      </Box>
     </>
   );
 };

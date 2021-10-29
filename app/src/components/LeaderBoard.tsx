@@ -1,47 +1,41 @@
-import { AppBar, Box, Tab, Tabs, Typography } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core";
-import { withStyles } from "@material-ui/styles";
-import React, { useState } from "react";
-import { LeaderBoardTabs } from "../constants/enums/enums";
-import LeaderBoardTable from "./generic/LeaderBoardTable";
-import { StyledButton } from "./generic/StyledButton";
+import { AppBar, Box, Tab, Tabs, Typography, makeStyles } from '@material-ui/core';
+import { withStyles } from '@material-ui/styles';
+import React, { useState } from 'react';
+import { LeaderBoardTabs } from '../constants/enums/enums';
+import LeaderBoardTable from './generic/LeaderBoardTable';
+import { StyledButton } from './generic/StyledButton';
 
 const useStyles = makeStyles((theme) => ({
   header: {
-    fontWeight: "bold",
-    fontSize: "16px",
-    lineHeight: "19px",
-    letterSpacing: "0.025em",
-    color: "#1D3150",
+    fontWeight: 'bold',
+    fontSize: '16px',
+    lineHeight: '19px',
+    letterSpacing: '0.025em',
+    color: '#1D3150',
   },
   appbar: {
-    background: "none",
-    boxShadow: "none",
+    background: 'none',
+    boxShadow: 'none',
   },
   tab: {
-    textTransform: "none",
-    color: "#1D3150",
-    fontWeight: "bold",
-    fontSize: "16px",
+    textTransform: 'none',
+    color: '#1D3150',
+    fontWeight: 'bold',
+    fontSize: '16px',
   },
 }));
 
 const StyledTab = withStyles({
   indicator: {
-    backgroundColor: "#1D3150",
+    backgroundColor: '#1D3150',
   },
 })(Tabs);
 
 function LeaderBoard() {
-  const [currentTab, setCurrentTab] = useState<LeaderBoardTabs>(
-    LeaderBoardTabs.Project
-  );
+  const [currentTab, setCurrentTab] = useState<LeaderBoardTabs>(LeaderBoardTabs.Project);
   const classes = useStyles();
 
-  const handleChange = (
-    e: React.ChangeEvent<{}>,
-    newValue: LeaderBoardTabs
-  ) => {
+  const handleChange = (e: React.ChangeEvent<{}>, newValue: LeaderBoardTabs) => {
     setCurrentTab(newValue);
   };
   return (
@@ -62,10 +56,10 @@ function LeaderBoard() {
         </StyledTab>
       </AppBar>
       <Box marginY={2}>
-        <LeaderBoardTable data={[{ name: "LTC", value: 1200 }]} />
+        <LeaderBoardTable data={[{ name: 'LTC', value: 1200 }]} />
       </Box>
-      <Box display='flex' justifyContent='center'>
-        <StyledButton variant={'save'} style={{background: 'none'}}>
+      <Box display="flex" justifyContent="center">
+        <StyledButton variant={'save'} style={{ background: 'none' }}>
           Show more
         </StyledButton>
       </Box>

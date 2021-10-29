@@ -1,6 +1,6 @@
 #!make
 export PROJECT := $(or $(PROJECT),freshaf)
-ENV_NAME ?= dev
+ENV_NAME ?= prod
 NAMESPACE = $(PROJECT)-$(ENV_NAME)
 DOMAIN ?= dev.af.freshworks.club
 APP_SRC_BUCKET = $(NAMESPACE)-app
@@ -18,8 +18,8 @@ CLOUDFRONT_ID=EXVZ3ZKC7MOZG
 endif
 
 ifeq ($(ENV_NAME), prod)
-DOMAIN=af.freshworks.club
-CLOUDFRONT_ID=
+DOMAIN=
+CLOUDFRONT_ID=E1UH19M1TDKWZC
 endif
 
 define TFVARS_DATA

@@ -6,8 +6,8 @@ import {
   DialogContentText,
   DialogTitle,
   TextField,
-} from "@material-ui/core";
-import { useState } from "react";
+} from '@material-ui/core';
+import React, { useState } from 'react';
 
 function ProjectNameDialog({ isOpen }: { isOpen: boolean }) {
   const [open, setOpen] = useState(false);
@@ -22,16 +22,12 @@ function ProjectNameDialog({ isOpen }: { isOpen: boolean }) {
 
   return (
     <div>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="form-dialog-title"
-      >
+      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">Subscribe</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            To subscribe to this website, please enter your email address here.
-            We will send updates occasionally.
+            To subscribe to this website, please enter your email address here. We will send updates
+            occasionally.
           </DialogContentText>
           <TextField
             autoFocus

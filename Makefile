@@ -1,24 +1,20 @@
 #!make
 export PROJECT := $(or $(PROJECT),freshaf)
-ENV_NAME ?= prod
+ENV_NAME ?= dev
 NAMESPACE = $(PROJECT)-$(ENV_NAME)
-DOMAIN ?= dev.af.freshworks.club
 APP_SRC_BUCKET = $(NAMESPACE)-app
 export AWS_REGION ?= ca-central-1
 
 TERRAFORM_DIR = terraform
 export BOOTSTRAP_ENV=terraform/bootstrap
-CLOUDFRONT_ID=EXVZ3ZKC7MOZG
-
 
 ifeq ($(ENV_NAME), dev)
-#DOMAIN=dev.af.freshworks.club
-DOMAIN=
+DOMAIN=dev.af.freshworks.club
 CLOUDFRONT_ID=EXVZ3ZKC7MOZG
 endif
 
 ifeq ($(ENV_NAME), prod)
-DOMAIN=
+DOMAIN=af.freshworks.club
 CLOUDFRONT_ID=E1UH19M1TDKWZC
 endif
 
@@ -45,7 +41,6 @@ export TF_BACKEND_CFG
 
 print-env:
 	@echo NAMESPACE=$(NAMESPACE)
-	@echo AWS_SA_ROLE_ARN=$(AWS_SA_ROLE_ARN)
 	@echo
 	@echo ./$(TERRAFORM_DIR)/.auto.tfvars:
 	@echo "$$TFVARS_DATA"
@@ -57,7 +52,7 @@ bootstrap:
 	## Set-up a S3 bucket for storing terraform state.
 	## Only needs to be run once per environment, globally.
 	terraform -chdir=$(BOOTSTRAP_ENV) init -input=false -reconfigure \
--backend-config='path=$(ENV_NAME).tfstate'
+		-backend-config='path=$(ENV_NAME).tfstate'
 	terraform -chdir=$(BOOTSTRAP_ENV) apply -auto-approve -input=false \
 		-var='namespace=$(NAMESPACE)'
 

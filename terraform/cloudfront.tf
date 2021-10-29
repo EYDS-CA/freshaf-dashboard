@@ -45,9 +45,7 @@ resource "aws_s3_bucket" "app_logs" {
 resource "aws_cloudfront_distribution" "app" {
   comment = local.app_name
 
-  aliases = local.has_domain ? [var.domain, "www.${var.domain}"] : []
-
-  
+  aliases = local.has_domain ? [var.domain] : []
 
   logging_config {
     bucket = aws_s3_bucket.app_logs.bucket_domain_name

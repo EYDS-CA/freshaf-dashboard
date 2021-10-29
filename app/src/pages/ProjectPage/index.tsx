@@ -32,7 +32,6 @@ const ProjectPage = () => {
         <Formik
           innerRef={formRef}
           initialValues={schema?.questions || {}}
-          // validationSchema={{}}
           onSubmit={handleSubmit}
         >
           {() => (

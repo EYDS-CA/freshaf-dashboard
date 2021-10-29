@@ -1,6 +1,5 @@
 class Answer {
   readonly id;
-  readonly question;
   readonly answer;
 }
 

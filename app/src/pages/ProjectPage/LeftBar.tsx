@@ -2,7 +2,6 @@ import React from 'react';
 import { Box, makeStyles, Typography } from '@material-ui/core';
 import { mdiPlus } from '@mdi/js';
 import Icon from '@mdi/react';
-import { useHistory } from 'react-router-dom';
 import { StyledButton } from '../../components/generic/StyledButton';
 import ProjectRating from '../../components/ProjectRating';
 import { ProjectSummary } from '../../hooks/projects';
@@ -23,7 +22,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function LeftBar({ projects }: { projects: ProjectSummary[] }) {
   const classes = useStyles();
-  const history = useHistory();
 
   return (
     <Box className={classes.leftBar}>

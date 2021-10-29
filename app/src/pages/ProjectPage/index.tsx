@@ -29,11 +29,7 @@ const ProjectPage = () => {
   return (
     <div>
       <Page isFetching={false}>
-        <Formik
-          innerRef={formRef}
-          initialValues={schema?.questions || {}}
-          onSubmit={handleSubmit}
-        >
+        <Formik innerRef={formRef} initialValues={schema?.questions || {}} onSubmit={handleSubmit}>
           {() => (
             <FormikForm>
               <Box display="flex" minHeight="calc(100vh - 58px)">

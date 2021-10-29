@@ -9,8 +9,8 @@ import {
 } from "@material-ui/core";
 import { useState } from "react";
 
-export const ProjectNameDialog = () => {
-  const [open, setOpen] = useState<boolean>(false);
+function ProjectNameDialog({ isOpen }: { isOpen: boolean }) {
+  const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);

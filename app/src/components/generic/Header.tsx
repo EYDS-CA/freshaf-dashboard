@@ -1,28 +1,26 @@
-import { AppBar, Box, Typography } from "@material-ui/core";
-import React from "react";
-import { mdiEmoticonCoolOutline } from "@mdi/js";
-import Icon from "@mdi/react";
-import { makeStyles } from "@material-ui/core";
-import SearchBar from "./SearchBar";
-import { StyledButton } from "./StyledButton";
-import { mdiLogout } from "@mdi/js";
+import React from 'react';
+import { AppBar, Box, Typography, makeStyles } from '@material-ui/core';
+import { mdiEmoticonCoolOutline, mdiLogout } from '@mdi/js';
+import Icon from '@mdi/react';
+import SearchBar from './SearchBar';
+import { StyledButton } from './StyledButton';
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
-    backgroundColor: "white",
-    boxShadow: "0px 4px 5px rgba(123, 130, 155, 0.15)",
-    color: "#1D3150",
-    padding: `0 ${theme.spacing(3)}px`
+    backgroundColor: 'white',
+    boxShadow: '0px 4px 5px rgba(123, 130, 155, 0.15)',
+    color: '#1D3150',
+    padding: `0 ${theme.spacing(3)}px`,
   },
   appBarHeaderText: {
-    fontSize: "24px",
-    lineHeight: "28px",
-    letterSpacing: "0.04rem",
+    fontSize: '24px',
+    lineHeight: '28px',
+    letterSpacing: '0.04rem',
     fontWeight: 500,
-    marginLeft: '15px'
+    marginLeft: '15px',
   },
   logOut: {
-    marginLeft: "5px",
+    marginLeft: '5px',
   },
 }));
 
@@ -31,15 +29,10 @@ function Header() {
   return (
     <Box>
       <AppBar position="static" className={classes.appBar}>
-        <Box display="flex" alignItems="center" justifyContent="space-between" >
-          <Box display="flex" alignItems='center'>
-            <Icon
-              path={mdiEmoticonCoolOutline}
-              size={1.3}
-            />
-            <Typography className={classes.appBarHeaderText}>
-              FreshAF Dashboard
-            </Typography>
+        <Box display="flex" alignItems="center" justifyContent="space-between">
+          <Box display="flex" alignItems="center">
+            <Icon path={mdiEmoticonCoolOutline} size={1.3} />
+            <Typography className={classes.appBarHeaderText}>FreshAF Dashboard</Typography>
           </Box>
           <Box width="60%">
             <SearchBar />

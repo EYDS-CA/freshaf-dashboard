@@ -7,10 +7,10 @@ import ProjectPage from '../pages/ProjectPage';
 
 const useStyles = makeStyles((theme) => ({
   content: {
-    width: "100%",
-    padding: theme.spacing(1)
-  }
-}))
+    width: '100%',
+    padding: theme.spacing(1),
+  },
+}));
 
 function App() {
   const classes = useStyles();
@@ -18,16 +18,18 @@ function App() {
 
   return (
     <Box display="flex">
-      { projects ? <LeftBar projects={projects} /> : <></> }
+      {projects ? <LeftBar projects={projects} /> : <></>}
       <Box className={classes.content}>
         <Switch>
           <Route path="/project/:projectId">
             <ProjectPage />
           </Route>
           <Route path="/">
-            { projects && projects.length > 0 
-              ? <Redirect to={`/project/${projects[0].id}`}/>
-              : <></>}
+            {projects && projects.length > 0 ? (
+              <Redirect to={`/project/${projects[0].id}`} />
+            ) : (
+              <></>
+            )}
           </Route>
         </Switch>
       </Box>

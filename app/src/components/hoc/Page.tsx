@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
-import PropTypes from "prop-types";
-import { LinearProgress } from "@material-ui/core";
-import { NavBar, Wrapper } from "..";
+import React, { useEffect } from 'react';
+import PropTypes from 'prop-types';
+import { LinearProgress } from '@material-ui/core';
+import { NavBar, Wrapper } from '..';
 
 const Page = (props: any) => {
   const { children, isFetching, container, isBusy, wrapperClasses, showNavBar } = props;
@@ -20,7 +20,7 @@ const Page = (props: any) => {
   );
 
   return (
-    <Wrapper    
+    <Wrapper
       isFetching={isFetching}
       isBusy={isBusy}
       navBar={showNavBar ? navBar : <></>}

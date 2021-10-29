@@ -28,12 +28,6 @@ resource "aws_cloudfront_origin_access_identity" "app" {
   comment = local.app_name
 }
 
-resource "aws_cloudfront_function" "nextjs_request" {
-  name    = "${local.namespace}-cf-request"
-  runtime = "cloudfront-js-1.0"
-  comment = "Rewrite requests to match Next.js routing"
-  code    = file("${path.module}/cloudfront/request.js")
-}
 
 resource "aws_cloudfront_function" "response" {
   name    = "${local.namespace}-cf-response"
@@ -42,12 +36,6 @@ resource "aws_cloudfront_function" "response" {
   code    = file("${path.module}/cloudfront/response.js")
 }
 
-resource "aws_cloudfront_function" "api_request" {
-  name    = "${local.namespace}-cf-api-request"
-  runtime = "cloudfront-js-1.0"
-  comment = "add client ip address"
-  code    = file("${path.module}/cloudfront/api-request.js")
-}
 
 resource "aws_s3_bucket" "app_logs" {
   bucket = "${local.app_name}-logs"
@@ -102,12 +90,6 @@ resource "aws_cloudfront_distribution" "app" {
     cache_policy_id        = data.aws_cloudfront_cache_policy.disabled.id
     viewer_protocol_policy = "redirect-to-https"
 
-    // Add .html onto the end of requests
-    function_association {
-      event_type   = "viewer-request"
-      function_arn = aws_cloudfront_function.nextjs_request.arn
-    }
-
     function_association {
       event_type   = "viewer-response"
       function_arn = aws_cloudfront_function.response.arn
@@ -127,10 +109,6 @@ resource "aws_cloudfront_distribution" "app" {
       function_arn = aws_cloudfront_function.response.arn
     }
 
-    function_association {
-      event_type   = "viewer-request"
-      function_arn = aws_cloudfront_function.api_request.arn
-    }
 
     forwarded_values {
       query_string = true
@@ -145,21 +123,7 @@ resource "aws_cloudfront_distribution" "app" {
     max_ttl     = 0
     compress    = true
   }
-
-  // Cache _next directory
-  ordered_cache_behavior {
-    path_pattern           = "/_next/*"
-    allowed_methods        = ["GET", "HEAD", "OPTIONS"]
-    cached_methods         = ["GET", "HEAD", "OPTIONS"]
-    target_origin_id       = local.s3_origin_id
-    cache_policy_id        = data.aws_cloudfront_cache_policy.optimized.id
-    viewer_protocol_policy = "redirect-to-https"
-
-    function_association {
-      event_type   = "viewer-response"
-      function_arn = aws_cloudfront_function.response.arn
-    }
-  }
+  
 
   // Cache img directory
   ordered_cache_behavior {

@@ -1,0 +1,20 @@
+version: '3.8'
+
+# Note: did not work well on Apple M1
+services:
+  localstack:
+    container_name: '${LOCALSTACK_DOCKER_NAME-localstack_main1}'
+    image: localstack/localstack
+    network_mode: bridge
+    ports:
+      - '127.0.0.1:4566:4566'
+      - '127.0.0.1:4571:4571'
+    environment:
+      - SERVICES=serverless,cognito,rds,sqs,sns,cloudformation
+      - DEBUG=1
+      - DATA_DIR=/tmp/localstack/data
+      - HOST_TMP_FOLDER=${TMPDIR:-/tmp/}localstack
+      - DOCKER_HOST=unix:///var/run/docker.sock
+    volumes:
+      - '${TMPDIR:-/tmp}/localstack:/tmp/localstack'
+      - '/var/run/docker.sock:/var/run/docker.sock'

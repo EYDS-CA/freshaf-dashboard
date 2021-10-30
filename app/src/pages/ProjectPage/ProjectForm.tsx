@@ -185,6 +185,7 @@ const ProjectForm = (props) => {
                   <Box display="flex" flexDirection="column" width="100%">
                     <Typography className={classes.description}>{question.description}</Typography>
                     <Field
+                      disabled={!project}
                       inputLabelProps={{ shrink: true }}
                       label="Note"
                       component={RenderTextField}

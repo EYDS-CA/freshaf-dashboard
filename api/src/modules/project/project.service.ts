@@ -4,7 +4,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import dynamoClient, { TABLE_NAME } from 'src/db/dynamo';
-import { ProjectDto } from './project.dto';
+import { ProjectDto, ProjectReq } from './project.dto';
 import { nanoid } from 'nanoid';
 
 @Injectable()
@@ -38,17 +38,25 @@ export class ProjectService {
     return project;
   }
 
-  async createOrUpdateProject(project: ProjectDto) {
-    if (!project) {
+  async createOrUpdateProject(projectReq: ProjectReq) {
+    if (!projectReq || !projectReq.loggedInUser) {
       throw new BadRequestException();
     }
 
+    const project: ProjectDto = { ...projectReq };
+
     if (!project.id) {
       // Existing Project
+      if (!project.created_by && !projectReq.loggedInUser) {
+        throw new BadRequestException('loggedInUser user not defined');
+      }
+
       project.id = nanoid();
       project.created_at = new Date().toISOString();
+      project.created_by = projectReq.loggedInUser;
     }
     project.updated_at = new Date().toISOString();
+    project.updated_by = projectReq.loggedInUser;
 
     await dynamoClient
       .put({

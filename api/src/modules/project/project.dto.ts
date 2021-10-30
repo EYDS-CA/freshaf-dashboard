@@ -13,3 +13,7 @@ export class ProjectDto {
   created_by: string;
   updated_by: string;
 }
+
+export class ProjectReq extends ProjectDto {
+  loggedInUser: string;
+}

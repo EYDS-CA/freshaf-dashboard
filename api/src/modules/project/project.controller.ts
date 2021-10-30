@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Param, Post, Put, Req } from '@nestjs/common';
-import { ProjectDto } from './project.dto';
+import { ProjectDto, ProjectReq } from './project.dto';
 import { ProjectService } from './project.service';
 
 @Controller('project')
@@ -17,8 +17,8 @@ export class ProjectController {
   }
 
   @Post()
-  async createOrUpdateProject(@Body() project: ProjectDto) {
-    return await this.projectService.createOrUpdateProject(project);
+  async createOrUpdateProject(@Body() projectReq: ProjectReq) {
+    return await this.projectService.createOrUpdateProject(projectReq);
   }
 
   @Get('/health/check')

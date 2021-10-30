@@ -49,6 +49,6 @@ function ProjectNameDialog({ isOpen }: { isOpen: boolean }) {
       </Dialog>
     </div>
   );
-};
+}
 
 export default ProjectNameDialog;

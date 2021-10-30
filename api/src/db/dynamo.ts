@@ -15,7 +15,19 @@ if (process.env.AWS_SESSION_TOKEN) {
 
 AWS.config.update(awsConfigParams);
 
-const dynamoClient = new AWS.DynamoDB.DocumentClient();
+//For local development 
+const localConfig = {
+  region: process.env.DB_REGION,
+  endpoint: new AWS.Endpoint(process.env.DB_ENDPOINT ?? 'http://localhost:4566'),
+  credentials: {
+    accessKeyId: 'xxx',
+    secretAccessKey: 'yyy',
+  },
+};
+
+const dynamoClient = new AWS.DynamoDB.DocumentClient(
+  process.env.NODE_ENV === 'development' ? localConfig : undefined,
+);
 
 export const TABLE_NAME = process.env.DYNAMO_TABLE_NAME;
 export default dynamoClient;

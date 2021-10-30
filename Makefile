@@ -103,3 +103,30 @@ build-app: pre-build
 build-all: build-api build-app
 
 build-and-deploy: build-all deploy
+
+
+####################################################################
+## Local development
+####################################################################
+
+run-local:
+	@echo "+\n++ Make: Running locally ...\n+"
+	@docker-compose -f docker-compose.dev.yml up
+
+run-local-app:
+	@echo "+\n++ Make: Running client locally ...\n+"
+	@docker-compose -f docker-compose.dev.yml up freshaf-app
+
+run-local-api:
+	@echo "+\n++ Make: Running api locally ...\n+"
+	@docker-compose -f docker-compose.dev.yml up freshaf-api
+
+close-local:
+	@echo "+\n++ Make Closing local containers"
+	@docker-compose -f docker-compose.dev.yml down
+
+local-app-exec:
+	@docker exec -it freshaf-app sh
+
+local-api-exec:
+	@docker exec -it freshaf-api sh

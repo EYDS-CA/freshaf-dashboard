@@ -1,0 +1,61 @@
+version: '3'
+
+services:
+  app:
+    image: freshaf-app:dev
+    container_name: freshaf-app
+    build:
+      context: ./app
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./app:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      - dynamo
+      - api
+    networks:
+      - backend
+
+  api:
+    image: freshaf-api:dev
+    container_name: freshaf-api
+    build:
+      context: ./api
+      dockerfile: Dockerfile.dev
+    ports:
+      - "4000:4000"
+    environment:
+      - NODE_ENV=development
+      - DB_REGION=eu-west-1
+      - DB_ENDPOINT='http://dynamo:4566'
+      - HOST_PORT=4000
+    expose:
+      - "4000"
+    volumes:
+      - ./api:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      - dynamo
+    networks:
+      - backend
+
+  dynamo:
+    container_name: dynamo-db
+    image: localstack/localstack
+    ports:
+      - '4566:4566'
+      - '4571:4571'
+    environment:
+      - SERVICES=dynamodb
+      - DEFAULT_REGION=eu-west-1 
+      - DEBUG=1
+      - DATA_DIR=/tmp/localstack/data
+    volumes:
+      - '${TMPDIR:-/tmp}/localstack:/tmp/localstack'
+      - '/var/run/docker.sock:/var/run/docker.sock'
+
+networks:
+  backend:
+    driver: "bridge"

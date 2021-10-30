@@ -3,7 +3,7 @@ import {
   NotFoundException,
   BadRequestException,
 } from '@nestjs/common';
-import dynamoClient, { TABLE_NAME } from 'src/db/dynamo';
+import dynamoClient, { TABLE_NAME } from '../../db/dynamo';
 import { ProjectDto, ProjectReq } from './project.dto';
 import { nanoid } from 'nanoid';
 

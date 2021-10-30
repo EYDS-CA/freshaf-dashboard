@@ -37,12 +37,10 @@ const RenderTextField = (props: any) => {
   return (
     <>
       <Box>
-        <Box marginBottom="5px">
-          <InputLabel>{label}</InputLabel>
-        </Box>
         <TextField
           id={'filled-helperText'}
           name={name}
+          label={label}
           variant={inputVariant}
           fullWidth
           error={touch && !!error}

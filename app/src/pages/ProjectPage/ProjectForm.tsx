@@ -20,12 +20,15 @@ import { Save as SaveIcon } from '@material-ui/icons';
 import { Field, useFormikContext } from 'formik';
 import { RenderTextField } from '../../components';
 import RenderCheckboxField from '../../components/RenderCheckboxField';
+import PropTypes from 'prop-types';
 
 const useStyles = makeStyles((theme) => ({
   question: {
     flexGrow: 1,
   },
-  root: {},
+  root: {
+    backgroundColor: '#FFFFFF',
+  },
   progressBar: {
     margin: theme.spacing(1),
   },
@@ -35,11 +38,11 @@ const useStyles = makeStyles((theme) => ({
     right: theme.spacing(2),
   },
   header: {
-    display: 'flex',
     position: 'sticky',
     top: 0,
     zIndex: 100,
     padding: theme.spacing(1),
+    borderRadius: '0',
   },
   headerItem: {
     margin: theme.spacing(1),
@@ -48,9 +51,8 @@ const useStyles = makeStyles((theme) => ({
   description: {
     marginBottom: theme.spacing(2),
   },
-  categories: {
-    marginTop: '50px',
-    marginBottom: '50px',
+  themes: {
+    marginTop: '20px',
   },
   theme: {
     fontSize: '18px',
@@ -63,6 +65,14 @@ const useStyles = makeStyles((theme) => ({
     cursor: 'pointer',
     fontWeight: 'bold',
   },
+  scores: {
+    fontSize: '24px',
+    fontWeight: 700,
+    color: '#53AAFC',
+  },
+  categoryText: {
+    fontSize: '12px',
+  },
 }));
 
 const icons: Record<Level, string> = {
@@ -72,7 +82,8 @@ const icons: Record<Level, string> = {
   gold: '🥇',
 };
 
-const ProjectForm = () => {
+const ProjectForm = (props) => {
+  const { project } = props;
   const classes = useStyles();
   const { values, setFieldValue } = useFormikContext();
   const { projectId } = useParams<{ projectId: string }>();
@@ -95,33 +106,46 @@ const ProjectForm = () => {
           <SaveIcon />
         </Fab>
       )}
-      <Paper className={classes.header}>
-        {categories.map((category) => {
-          const { total, level, nextThreshold } = scores[category];
-          return (
-            <Box className={classes.headerItem} key={category}>
-              <Typography variant="h6">
-                {icons[level]} {titleCase(category)} ({total}
-                {nextThreshold ? ` / ${nextThreshold})` : ')'}
-              </Typography>
-            </Box>
-          );
-        })}
-      </Paper>
-      <Grid container spacing={3} justifyContent="center" className={classes.categories}>
-        {themes.map((theme, index) => {
-          return (
-            <Grid key={`${theme}${index}`} item>
-              <Typography
-                className={theme === currentTheme ? classes.selectedTheme : classes.theme}
-                onClick={() => handleCategoryChange(theme)}
+      <Paper elevation={0} className={classes.header}>
+        <Box display="flex" justifyContent="spa">
+          {categories.map((category) => {
+            const { total, level, nextThreshold } = scores[category];
+            return (
+              <Box
+                className={classes.headerItem}
+                key={category}
+                display="flex"
+                justifyContent="space-evenly"
               >
-                {titleCase(theme)}
-              </Typography>
-            </Grid>
-          );
-        })}
-      </Grid>
+                <Box display="flex" flexDirection="column" alignItems="center">
+                  {icons[level]}
+                  <Typography className={classes.categoryText}>{category.toUpperCase()}</Typography>
+                </Box>
+                <Typography className={classes.scores}>
+                  {total}
+                  {nextThreshold ? ` / ${nextThreshold}` : ''}
+                </Typography>
+              </Box>
+            );
+          })}
+        </Box>
+        <Box display="inline-block">
+          <Grid container spacing={3} justifyContent="center" className={classes.themes}>
+            {themes.map((theme, index) => {
+              return (
+                <Grid key={`${theme}${index}`} item>
+                  <Typography
+                    className={theme === currentTheme ? classes.selectedTheme : classes.theme}
+                    onClick={() => handleCategoryChange(theme)}
+                  >
+                    {titleCase(theme)}
+                  </Typography>
+                </Grid>
+              );
+            })}
+          </Grid>
+        </Box>
+      </Paper>
       {!schema
         ? null
         : schema.questions.map((question) => {
@@ -134,6 +158,7 @@ const ProjectForm = () => {
                     onFocus={(event) => event.stopPropagation()}
                     control={
                       <Field
+                        disabled={!project}
                         name={question.id}
                         component={RenderCheckboxField}
                         checked={getAnswer(question.id).answer === 'yes'}
@@ -157,12 +182,13 @@ const ProjectForm = () => {
                   />
                 </AccordionSummary>
                 <AccordionDetails>
-                  <Box display="flex" flexDirection="column">
+                  <Box display="flex" flexDirection="column" width="100%">
                     <Typography className={classes.description}>{question.description}</Typography>
                     <Field
-                      label="Notes"
+                      inputLabelProps={{ shrink: true }}
+                      label="Note"
                       component={RenderTextField}
-                      name={`${question.id}-notes`}
+                      name={`${question.id}-note`}
                     />
                   </Box>
                 </AccordionDetails>
@@ -171,6 +197,10 @@ const ProjectForm = () => {
           })}
     </Box>
   );
+};
+
+ProjectForm.propTypes = {
+  project: PropTypes.object,
 };
 
 export default ProjectForm;

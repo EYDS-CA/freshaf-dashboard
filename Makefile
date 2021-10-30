@@ -25,6 +25,8 @@ api_artifact = "build/api.zip"
 app_sources = "build/app"
 app_sources_bucket = "$(APP_SRC_BUCKET)"
 domain = "$(DOMAIN)"
+google_client_id = "$(GOOGLE_CLIENT_ID)"
+google_secret = "$(GOOGLE_SECRET)"
 endef
 export TFVARS_DATA
 

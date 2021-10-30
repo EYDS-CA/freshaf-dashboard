@@ -30,5 +30,6 @@ jobs:
 
       - name: Build and deploy
         run: make build-and-deploy
-
-      
+        env:
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_SECRET: ${{ secrets.GOOGLE_SECRET }}

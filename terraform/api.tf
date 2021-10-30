@@ -13,7 +13,11 @@ resource "aws_lambda_function" "api" {
     variables = {
       NODE_ENV           = var.target_env
       AWS_S3_REGION      = var.region
+      
       DYNAMO_TABLE_NAME  = aws_dynamodb_table.api_table.name
+
+      GOOGLE_CLIENT_ID   = var.google_client_id
+      GOOGLE_SECRET      = var.google_secret
     }
   }
 }

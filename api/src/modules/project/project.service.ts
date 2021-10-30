@@ -38,25 +38,36 @@ export class ProjectService {
     return project;
   }
 
-  async createOrUpdateProject(projectReq: ProjectReq) {
-    if (!projectReq || !projectReq.loggedInUser) {
-      throw new BadRequestException();
-    }
+  async createProject(projectReq: ProjectReq) {
+    const project: ProjectDto = {
+      id: nanoid(),
+      answers: projectReq.answers,
+      name: projectReq.name,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      created_by: projectReq.loggedInUser,
+      updated_by: projectReq.loggedInUser,
+    };
 
-    const project: ProjectDto = { ...projectReq };
+    await dynamoClient
+      .put({
+        TableName: TABLE_NAME,
+        Item: {
+          PK: `PRO#${project.id}`,
+          SK: `#METADATA#${project.id}`,
+          resource: project,
+        },
+      })
+      .promise();
+  }
 
-    if (!project.id) {
-      // Existing Project
-      if (!project.created_by && !projectReq.loggedInUser) {
-        throw new BadRequestException('loggedInUser user not defined');
-      }
+  async updateProject(id: string, projectReq: ProjectReq) {
+    const project = await this.getProjectById(id);
 
-      project.id = nanoid();
-      project.created_at = new Date().toISOString();
-      project.created_by = projectReq.loggedInUser;
-    }
-    project.updated_at = new Date().toISOString();
+    project.name = projectReq.name;
+    project.answers = projectReq.answers;
     project.updated_by = projectReq.loggedInUser;
+    project.updated_at = new Date().toISOString();
 
     await dynamoClient
       .put({

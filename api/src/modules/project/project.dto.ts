@@ -1,3 +1,5 @@
+import Joi from 'joi';
+
 class Answer {
   readonly id;
   readonly answer;
@@ -5,14 +7,27 @@ class Answer {
 
 export class ProjectDto {
   id: string;
-  readonly name: string;
-  readonly answers: Array<Answer>;
+  name: string;
+  answers: Array<Answer>;
   created_at: string;
   updated_at: string;
   created_by: string;
   updated_by: string;
 }
 
-export class ProjectReq extends ProjectDto {
+export class ProjectReq {
+  readonly name: string;
+  readonly answers: Array<Answer>;
   loggedInUser: string;
 }
+
+const AnswerJoiSchema = Joi.object({
+  id: Joi.string().required(),
+  answer: Joi.string().required(),
+});
+
+export const ProjectReqJoiSchema = Joi.object({
+  name: Joi.string().min(3).required(),
+  answers: Joi.array().items(AnswerJoiSchema).required(),
+  loggedInUser: Joi.string().required().email(),
+});

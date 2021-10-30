@@ -8,7 +8,7 @@ import {
   Req,
   UsePipes,
 } from '@nestjs/common';
-import { JoiValidationPipe } from '../../joi-validation.pipe';
+import { JoiValidationPipe } from 'src/joi-validation.pipe';
 import { ProjectDto, ProjectReq, ProjectReqJoiSchema } from './project.dto';
 import { ProjectService } from './project.service';
 

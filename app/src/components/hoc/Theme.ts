@@ -11,8 +11,18 @@ const CentraNo2 = {
   `,
 };
 
+const colors = {
+  textSecondary: '#1D3150',
+  white: '#FFFFFF',
+};
+
 export const theme = createTheme({
   /** Colors */
+  palette: {
+    text: {
+      secondary: colors.textSecondary,
+    },
+  },
 
   /** Typography */
   typography: {
@@ -25,6 +35,44 @@ export const theme = createTheme({
     },
   },
 
+  props: {
+    MuiAccordion: {
+      elevation: 0,
+    },
+  },
+
   /** Overrides */
-  overrides: {},
+  overrides: {
+    MuiButton: {
+      root: {
+        paddingTop: '12px',
+        paddingBottom: '12px',
+        borderRadius: '10px',
+      },
+      contained: {
+        backgroundColor: colors.textSecondary,
+        color: colors.white,
+      },
+      outlined: {
+        color: colors.textSecondary,
+      },
+    },
+    MuiDialog: {
+      paper: {
+        borderRadius: '19px',
+      },
+    },
+    MuiFilledInput: {
+      input: {
+        backgroundColor: '#FFFFFF',
+      },
+    },
+    MuiAccordion: {
+      root: {
+        '&:before': {
+          display: 'none',
+        },
+      },
+    },
+  },
 });

@@ -7,3 +7,4 @@ export { default as LeftBar } from '../pages/ProjectPage/LeftBar';
 export { default as Overlay } from './hoc/Overlay';
 export { default as RenderTextField } from './RenderTextField';
 export { default as RenderCheckBoxField } from './RenderCheckboxField';
+export { default as Modal } from './generic/Modal';

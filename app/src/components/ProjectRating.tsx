@@ -4,6 +4,7 @@ import { AppraisalTitles, Medals } from '../constants/enums/enums';
 import Appraisal from './generic/Appraisal';
 import { StyledButton } from './generic/StyledButton';
 import LeaderBoard from './LeaderBoard';
+import { useFormikContext } from 'formik';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -44,6 +45,7 @@ const useStyles = makeStyles((theme) => ({
 
 function ProjectRating() {
   const classes = useStyles();
+  const { submitForm } = useFormikContext();
   return (
     <Box className={classes.container}>
       <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -72,7 +74,9 @@ function ProjectRating() {
       </Box>
       <Typography className={classes.creatorText}>Last Updated: {''}</Typography>
       <Box marginY={2} display="flex" justifyContent="center">
-        <StyledButton variant="save">Save</StyledButton>
+        <StyledButton variant="save" onClick={submitForm}>
+          Save
+        </StyledButton>
       </Box>
       <LeaderBoard />
     </Box>

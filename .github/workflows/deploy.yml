@@ -28,8 +28,17 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY_ID }}
           aws-region: ca-central-1
 
-      - name: Build and deploy
-        run: make build-and-deploy
+      - name: Build API
+        run: make build-api
+
+      - name: Build App
+        run: make build-app
+
+      - name: Deploy API and infrastructure
+        run: make deploy-api
         env:
           GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
           GOOGLE_SECRET: ${{ secrets.GOOGLE_SECRET }}
+      
+      - name: Deploy app to CloudFront
+        run: make deploy-app

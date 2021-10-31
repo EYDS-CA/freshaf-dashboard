@@ -7,10 +7,6 @@ const Page = (props: any) => {
   const { children, isFetching, container, isBusy, wrapperClasses, showNavBar } = props;
   const content = isFetching ? <LinearProgress /> : children;
 
-  useEffect(() => {
-    window.document.title = `FreshWorks Application Framework`;
-  }, []);
-
   const navBar: React.ReactElement = (
     <NavBar
       links={[]}

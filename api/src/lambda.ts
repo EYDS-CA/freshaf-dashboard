@@ -10,7 +10,7 @@ import {
 } from 'aws-lambda';
 import { AppModule } from './app.module';
 import { ExpressAdapter } from '@nestjs/platform-express';
-import { API_PREFIX } from './main';
+import { API_PREFIX } from './config';
 
 let cachedServer: Handler;
 

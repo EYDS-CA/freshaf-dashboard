@@ -1,8 +1,7 @@
 import 'dotenv/config';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-
-export const API_PREFIX = 'api/v1';
+import { API_PREFIX } from './config';
 
 async function bootstrap() {
   const nestApp = await NestFactory.create(AppModule);

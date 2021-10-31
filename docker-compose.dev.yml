@@ -27,10 +27,13 @@ services:
     ports:
       - "4000:4000"
     environment:
-      - NODE_ENV=development
-      - DB_REGION=eu-west-1
-      - DB_ENDPOINT='http://dynamo:4566'
+      - NODE_ENV=docker
+      - AWS_DEFAULT_REGION=eu-west-1
+      - AWS_ACCESS_KEY_ID=xxx
+      - AWS_SECRET_ACCESS_KEY=yyy
+      - DB_ENDPOINT=http://dynamo:4566
       - HOST_PORT=4000
+      - DYNAMO_TABLE_NAME=freshaf-dashboard
     expose:
       - "4000"
     volumes:
@@ -55,6 +58,8 @@ services:
     volumes:
       - '${TMPDIR:-/tmp}/localstack:/tmp/localstack'
       - '/var/run/docker.sock:/var/run/docker.sock'
+    networks:
+      - backend
 
 networks:
   backend:

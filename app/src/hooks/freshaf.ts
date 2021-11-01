@@ -85,12 +85,13 @@ function highestThresholdPassed(
   return { level: 'gold' };
 }
 
-function useFreshAfSchema(): { schema?: Schema; error?: Error } {
+export function useFreshAfSchema(): { schema?: Schema; error?: Error } {
   const [{ data: freshAfRaw, error }] = useAxios<string>({
     url: rawYAML,
     method: 'get',
   });
   const [schema, setSchema] = useState<Schema>();
+
   useEffect(() => {
     if (freshAfRaw) {
       const schema = yaml.load(freshAfRaw) as Schema;

@@ -12,7 +12,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { titleCase } from 'title-case';
 import useFreshAf, { categories, themes, Level, Theme } from '../../hooks/freshaf';
@@ -21,6 +21,7 @@ import { Field, useFormikContext } from 'formik';
 import { RenderTextField } from '../../components';
 import RenderCheckboxField from '../../components/RenderCheckboxField';
 import PropTypes from 'prop-types';
+import { useQuestionsHook } from '../../hooks/questions';
 
 const useStyles = makeStyles((theme) => ({
   question: {
@@ -87,13 +88,18 @@ const ProjectForm = (props) => {
   const classes = useStyles();
   const { values, setFieldValue } = useFormikContext();
   const { projectId } = useParams<{ projectId: string }>();
+  const [currentTheme, setCurrentTheme] = useState<Theme>('environments');
   const { scores, schema, hasUnsavedChanges, getAnswer, setAnswer, saveChanges } = useFreshAf({
     projectId,
   });
+  const { getQuestions, questions } = useQuestionsHook();
 
-  const [currentTheme, setCurrentTheme] = useState<Theme>('environments');
+  useEffect(() => {
+    // TODO: Finish questions being fetched
+    getQuestions();
+  }, []);
 
-  const handleCategoryChange = (theme: Theme) => {
+  const handleThemeChange = (theme: Theme) => {
     setCurrentTheme(theme);
   };
 
@@ -136,7 +142,7 @@ const ProjectForm = (props) => {
                 <Grid key={`${theme}${index}`} item>
                   <Typography
                     className={theme === currentTheme ? classes.selectedTheme : classes.theme}
-                    onClick={() => handleCategoryChange(theme)}
+                    onClick={() => handleThemeChange(theme)}
                   >
                     {titleCase(theme)}
                   </Typography>
@@ -146,9 +152,9 @@ const ProjectForm = (props) => {
           </Grid>
         </Box>
       </Paper>
-      {!schema
+      {!questions
         ? null
-        : schema.questions.map((question) => {
+        : questions.questions.map((question) => {
             console.log(getAnswer(question.id).answer === 'yes');
             return (
               <Accordion className={classes.question} key={`${projectId}/${question.id}`}>

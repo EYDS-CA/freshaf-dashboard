@@ -35,14 +35,8 @@ const Modal = (props: any) => {
   const formRef = useRef<any>();
   const { isVisible, titleText, onSelect, onCreate, onClose } = props;
 
-  const handleSubmit = () => {
-    const { validateForm, isValid, values } = formRef.current;
-    validateForm();
-    onCreate(values.name);
-  };
-
   return (
-    <Dialog open={isVisible} onClose={onClose}>
+    <Dialog open={isVisible}>
       <Box className={classes.dialog}>
         <Box mb="32px">
           <Typography className={classes.titleText}>{titleText}</Typography>
@@ -51,7 +45,7 @@ const Modal = (props: any) => {
           innerRef={formRef}
           initialValues={{ name: '' }}
           validationSchema={NewProjectSchema}
-          onSubmit={handleSubmit}
+          onSubmit={onCreate}
         >
           {({ submitForm }) => (
             <FormikForm>
@@ -68,7 +62,11 @@ const Modal = (props: any) => {
                     </Button>
                   </Grid>
                   <Grid item xs={12}>
-                    <Button variant="outlined" onClick={onSelect} className={classes.button}>
+                    <Button
+                      variant="outlined"
+                      onClick={() => onSelect(false)}
+                      className={classes.button}
+                    >
                       Select an Existing Project
                     </Button>
                   </Grid>

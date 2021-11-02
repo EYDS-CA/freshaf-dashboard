@@ -132,3 +132,7 @@ local-app-exec:
 
 local-api-exec:
 	@docker exec -it freshaf-api sh
+
+local-db-migrate:
+	@docker exec -it freshaf-api npm run db:migrate
+	

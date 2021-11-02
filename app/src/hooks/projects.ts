@@ -56,7 +56,7 @@ export async function saveProject(project: Project): Promise<void> {
 
 export function useGetProject(projectId: string): UseGetProject {
   const [project, setProject] = useState(projectStore[projectId]);
-  const result = axios.get('/');
+  // const result = axios.get('/');
 
   useEffect(() => {
     setProject(projectStore[projectId]);

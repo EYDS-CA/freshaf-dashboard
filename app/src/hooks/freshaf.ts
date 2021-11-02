@@ -3,7 +3,6 @@ import yaml from 'js-yaml';
 import { useEffect, useState } from 'react';
 import { Answer, isEmptyAnswer, saveProject, useGetProject } from './projects';
 import deepEqual from 'deep-equal';
-import rawYAML from '../constants/freshaf-2.0.yml';
 
 const version = '2.0';
 
@@ -95,9 +94,7 @@ export function useFreshAfSchema(): { schema?: Schema; error?: Error } {
 
   useEffect(() => {
     if (freshAfRaw) {
-      console.log(freshAfRaw);
       const schema = yaml.load(freshAfRaw) as Schema;
-      console.log(JSON.stringify(schema));
       setSchema(schema);
     }
   }, [freshAfRaw, setSchema]);
@@ -190,6 +187,7 @@ export default function useFreshAf({ projectId }: { projectId: string }): UseFre
     hasUnsavedChanges: unsaved,
 
     setAnswer(answer: Answer) {
+      console.log('setting answer', answer);
       setAnswers((answers) => {
         const filtered = [...answers.filter((ans) => ans.questionId !== answer.questionId)];
         if (isEmptyAnswer(answer)) {
@@ -213,10 +211,10 @@ export default function useFreshAf({ projectId }: { projectId: string }): UseFre
     },
 
     async saveChanges() {
-      if (project) {
-        await saveProject({ ...project, answers });
-        await refetch();
-      }
+      // if (project) {
+      //   await saveProject({ ...project, answers });
+      //   await refetch();
+      // }
     },
   };
 }

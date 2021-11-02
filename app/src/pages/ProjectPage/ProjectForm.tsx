@@ -155,7 +155,6 @@ const ProjectForm = (props) => {
       {!schema
         ? null
         : schema.questions.map((question) => {
-            console.log(getAnswer(question.id).answer === 'yes');
             return (
               <Accordion className={classes.question} key={`${projectId}/${question.id}`}>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>

@@ -92,12 +92,12 @@ const ProjectForm = (props) => {
   const { scores, schema, hasUnsavedChanges, getAnswer, setAnswer, saveChanges } = useFreshAf({
     projectId,
   });
-  const { getQuestions, questions } = useQuestionsHook();
+  // const { getQuestions, questions } = useQuestionsHook();
 
-  useEffect(() => {
-    // TODO: Finish questions being fetched
-    getQuestions();
-  }, []);
+  // useEffect(() => {
+  //   // TODO: Finish questions being fetched
+  //   getQuestions();
+  // }, []);
 
   const handleThemeChange = (theme: Theme) => {
     setCurrentTheme(theme);
@@ -152,9 +152,9 @@ const ProjectForm = (props) => {
           </Grid>
         </Box>
       </Paper>
-      {!questions
+      {!schema
         ? null
-        : questions.questions.map((question) => {
+        : schema.questions.map((question) => {
             console.log(getAnswer(question.id).answer === 'yes');
             return (
               <Accordion className={classes.question} key={`${projectId}/${question.id}`}>
@@ -164,7 +164,6 @@ const ProjectForm = (props) => {
                     onFocus={(event) => event.stopPropagation()}
                     control={
                       <Field
-                        disabled={!project}
                         name={question.id}
                         component={RenderCheckboxField}
                         checked={getAnswer(question.id).answer === 'yes'}
@@ -191,7 +190,6 @@ const ProjectForm = (props) => {
                   <Box display="flex" flexDirection="column" width="100%">
                     <Typography className={classes.description}>{question.description}</Typography>
                     <Field
-                      disabled={!project}
                       inputLabelProps={{ shrink: true }}
                       label="Note"
                       component={RenderTextField}

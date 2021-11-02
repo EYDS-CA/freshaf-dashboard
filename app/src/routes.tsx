@@ -4,7 +4,7 @@ import { Route, Switch } from 'react-router-dom';
 
 export const AFRoutes = Object.freeze({
   Root: '/',
-  Project: '/pages/project/:projectId',
+  Project: '/project/:projectId',
 });
 
 const ProjectPage = lazy(() => import('./pages/ProjectPage'));

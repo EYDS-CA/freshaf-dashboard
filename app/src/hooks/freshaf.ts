@@ -5,7 +5,7 @@ import { Answer, isEmptyAnswer, saveProject, useGetProject } from './projects';
 import deepEqual from 'deep-equal';
 import rawYAML from '../constants/freshaf-2.0.yml';
 
-const version = '0.1';
+const version = '2.0';
 
 export type Level = 'paper' | 'bronze' | 'silver' | 'gold';
 export type Category = 'quality' | 'velocity' | 'resilience' | 'security';
@@ -87,14 +87,17 @@ function highestThresholdPassed(
 
 export function useFreshAfSchema(): { schema?: Schema; error?: Error } {
   const [{ data: freshAfRaw, error }] = useAxios<string>({
-    url: rawYAML,
+    baseURL: '',
+    url: `/freshaf-${version}.yml`,
     method: 'get',
   });
   const [schema, setSchema] = useState<Schema>();
 
   useEffect(() => {
     if (freshAfRaw) {
+      console.log(freshAfRaw);
       const schema = yaml.load(freshAfRaw) as Schema;
+      console.log(JSON.stringify(schema));
       setSchema(schema);
     }
   }, [freshAfRaw, setSchema]);

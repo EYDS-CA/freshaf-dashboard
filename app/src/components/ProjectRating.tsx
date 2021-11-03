@@ -1,10 +1,13 @@
 import { Box, Grid, makeStyles, Typography } from '@material-ui/core';
-import React from 'react';
-import { AppraisalTitles, Medals } from '../constants/enums/enums';
-import Appraisal from './generic/Appraisal';
+import React, { useEffect, useState } from 'react';
 import { StyledButton } from './generic/StyledButton';
 import LeaderBoard from './LeaderBoard';
 import { useFormikContext } from 'formik';
+import { Project } from '../hooks/projects';
+import { useSchemaContext } from '../providers/Schema';
+import { Scores } from '../hooks/freshaf';
+import { ProjectLegend } from '../util/projectLegend.util';
+import Appraisal, { AppraisalProp } from './generic/Appraisal';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -43,41 +46,50 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ProjectRating() {
+function ProjectRating({ currentProject, scores }: { currentProject: Project; scores: Scores }) {
   const classes = useStyles();
-  const { submitForm } = useFormikContext();
+  const [rating, setRating] = useState<AppraisalProp[]>([]);
+  const { submitForm, values } = useFormikContext();
+  const schema = useSchemaContext();
+  useEffect(() => {
+    if (scores) {
+      setRating(new ProjectLegend(scores).build());
+    }
+  }, [scores]);
   return (
     <Box className={classes.container}>
-      <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Typography className={classes.title}>{'FreshAF Dashboard'}</Typography>
-        {/* TODO: Add a conditional input field to update name */}
-        <Typography className={classes.editButton} onClick={() => {}}>
-          Edit
-        </Typography>
-      </Box>
-      <Typography className={classes.creatorText}>Creator</Typography>
-      <Typography className={classes.creatorName}>{'Sagar Roy'}</Typography>
-      <Box marginY={3}>
-        <Grid container spacing={1}>
-          {[1, 2, 3, 4].map((_, index) => {
-            return (
-              <Grid key={index} item xs={6}>
-                <Appraisal
-                  emoji={Medals.Gold}
-                  title={AppraisalTitles.ProjectLevel}
-                  value={'Gold'}
-                />
-              </Grid>
-            );
-          })}
-        </Grid>
-      </Box>
-      <Typography className={classes.creatorText}>Last Updated: {''}</Typography>
-      <Box marginY={2} display="flex" justifyContent="center">
-        <StyledButton variant="save" onClick={submitForm}>
-          Save
-        </StyledButton>
-      </Box>
+      {currentProject && (
+        <Box>
+          <Box display="flex" justifyContent="space-between" alignItems="center">
+            <Typography className={classes.title}>{currentProject?.name}</Typography>
+            {/* TODO: Add a conditional input field to update name */}
+            <Typography className={classes.editButton} onClick={() => {}}>
+              Edit
+            </Typography>
+          </Box>
+          <Typography className={classes.creatorText}>Creator</Typography>
+          <Typography className={classes.creatorName}>
+            {currentProject?.creator || 'N/A'}
+          </Typography>
+          <Box marginY={3}>
+            <Grid container spacing={1}>
+              {rating?.map((element) => {
+                return (
+                  <Grid key={element.title} item xs={6}>
+                    <Appraisal emoji={element.emoji} title={element.title} value={element.value} />
+                  </Grid>
+                );
+              })}
+            </Grid>
+          </Box>
+          <Typography className={classes.creatorText}>Last Updated: {''}</Typography>
+          <Box marginY={2} display="flex" justifyContent="center">
+            <StyledButton variant="save" onClick={submitForm}>
+              Save
+            </StyledButton>
+          </Box>
+        </Box>
+      )}
       <LeaderBoard />
     </Box>
   );

@@ -1,8 +1,9 @@
 import useAxios from 'axios-hooks';
 import yaml from 'js-yaml';
 import { useEffect, useState } from 'react';
-import { Answer, isEmptyAnswer, saveProject, useGetProject } from './projects';
+import { Answer, isEmptyAnswer, Project, saveProject, useGetProject } from './projects';
 import deepEqual from 'deep-equal';
+import { useSchemaContext } from '../providers/Schema';
 
 const version = '2.0';
 
@@ -102,14 +103,14 @@ export function useFreshAfSchema(): { schema?: Schema; error?: Error } {
   return { schema, error };
 }
 
-export default function useFreshAf({ projectId }: { projectId: string }): UseFreshAf {
-  const { schema } = useFreshAfSchema();
+export default function useFreshAf({ project }: { project: Project }): UseFreshAf {
+  const schema = useSchemaContext();
   const [answersById, setAnswersById] = useState<Record<string, Answer>>({});
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [scores, setScores] = useState(startingScores);
   const [questionsById, setQuestionsById] = useState<Record<string, Question>>();
   const [unsaved, setUnsaved] = useState<boolean>(false);
-  const { project, refetch } = useGetProject(projectId);
+  // const { project, refetch } = useGetProject(projectId);
 
   // Load answers initially from the API
   useEffect(() => {

@@ -1,7 +1,7 @@
 import Joi from 'joi';
 
 class Answer {
-  readonly id;
+  readonly questionId;
   readonly answer;
 }
 
@@ -22,7 +22,7 @@ export class ProjectReq {
 }
 
 const AnswerJoiSchema = Joi.object({
-  id: Joi.string().required(),
+  questionId: Joi.string().required(),
   answer: Joi.string().required(),
 });
 

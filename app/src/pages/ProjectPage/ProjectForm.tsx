@@ -15,9 +15,9 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { titleCase } from 'title-case';
-import useFreshAf, { categories, themes, Level, Theme } from '../../hooks/freshaf';
+import useFreshAf, { categories, themes, Level, Theme, Scores, Schema } from '../../hooks/freshaf';
 import { Save as SaveIcon } from '@material-ui/icons';
-import { Field, useFormikContext } from 'formik';
+import { FastField, Field, useFormikContext } from 'formik';
 import { RenderTextField } from '../../components';
 import RenderCheckboxField from '../../components/RenderCheckboxField';
 import PropTypes from 'prop-types';
@@ -83,15 +83,22 @@ const icons: Record<Level, string> = {
   gold: '🥇',
 };
 
-const ProjectForm = (props) => {
-  const { project } = props;
+type ProjectFormProps = {
+  scores: Scores;
+  schema: Schema;
+  hasUnsavedChanges: boolean;
+  getAnswer?: Function;
+  setAnswer: Function;
+  saveChanges: Function;
+};
+
+const ProjectForm = (props: ProjectFormProps) => {
+  const { scores, schema, hasUnsavedChanges, getAnswer, setAnswer, saveChanges } = props;
   const classes = useStyles();
   const { values, setFieldValue } = useFormikContext();
   const { projectId } = useParams<{ projectId: string }>();
   const [currentTheme, setCurrentTheme] = useState<Theme>('environments');
-  const { scores, schema, hasUnsavedChanges, getAnswer, setAnswer, saveChanges } = useFreshAf({
-    projectId,
-  });
+
   // const { getQuestions, questions } = useQuestionsHook();
 
   // useEffect(() => {
@@ -161,11 +168,12 @@ const ProjectForm = (props) => {
                   <FormControlLabel
                     onClick={(event) => event.stopPropagation()}
                     onFocus={(event) => event.stopPropagation()}
+                    disabled={!projectId}
                     control={
-                      <Field
+                      <FastField
                         name={question.id}
                         component={RenderCheckboxField}
-                        checked={getAnswer(question.id).answer === 'yes'}
+                        // checked={getAnswer(question.id).answer === 'yes'}
                         onChange={(event: any) => {
                           setFieldValue(question.id, event.target.checked);
                           if (event.target.checked) {
@@ -201,10 +209,6 @@ const ProjectForm = (props) => {
           })}
     </Box>
   );
-};
-
-ProjectForm.propTypes = {
-  project: PropTypes.object,
 };
 
 export default ProjectForm;

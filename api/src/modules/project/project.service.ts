@@ -20,7 +20,6 @@ export class ProjectService {
     if (!id) {
       throw new BadRequestException();
     }
-
     const response = await dynamoClient
       .get({
         TableName: TABLE_NAME,
@@ -59,11 +58,11 @@ export class ProjectService {
         },
       })
       .promise();
+      return project.id;
   }
 
   async updateProject(id: string, projectReq: ProjectReq) {
     const project = await this.getProjectById(id);
-
     project.name = projectReq.name;
     project.answers = projectReq.answers;
     project.updated_by = projectReq.loggedInUser;

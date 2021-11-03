@@ -1,7 +1,7 @@
 import { Box, makeStyles } from '@material-ui/core';
 import React, { useEffect, useRef, useState } from 'react';
 import { LeftBar, Page, Modal } from '../../components';
-import { useGetProjectSummaries } from '../../hooks/projects';
+import { Project, useGetProjectSummaries } from '../../hooks/projects';
 import ProjectForm from './ProjectForm';
 import { Formik, Form as FormikForm } from 'formik';
 import useFreshAf from '../../hooks/freshaf';
@@ -16,21 +16,25 @@ const useStyles = makeStyles((theme) => ({
 const ProjectPage = () => {
   const history = useHistory();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [projects, setProjects] = useState<Project[]>();
   const classes = useStyles();
   const formRef = useRef<any>();
   const { projectId } = useParams<{ projectId: string }>();
-  const { schema } = useFreshAf({ projectId });
   const {
     createProject,
     projectId: newProjectId,
     isFetching,
     getProjectById,
     project,
-    projects,
+    projects: apiProjects,
+    getAllProjects,
+    updateProject,
+    answers,
   } = useProjectsHook();
 
-  const handleSave = (values: any) => {
-    console.log(JSON.stringify(values, null, 2));
+  const handleSave = () => {
+    const { values } = formRef.current;
+    updateProject(values);
   };
 
   const handleCreate = (values) => {
@@ -39,7 +43,18 @@ const ProjectPage = () => {
   };
 
   useEffect(() => {
+    getAllProjects();
+  }, []);
+
+  useEffect(() => {
+    if (apiProjects) {
+      setProjects(apiProjects);
+    }
+  }, [apiProjects]);
+
+  useEffect(() => {
     if (newProjectId) {
+      getAllProjects();
       history.push(AFRoutes.Project.replace(':projectId', newProjectId));
     }
   }, [newProjectId]);
@@ -55,16 +70,20 @@ const ProjectPage = () => {
       <Page isFetching={isFetching}>
         <Formik
           innerRef={formRef}
-          initialValues={project?.answers || {}}
+          initialValues={answers || {}}
           onSubmit={handleSave}
           enableReinitialize
         >
           {() => (
             <FormikForm>
               <Box display="flex" minHeight="calc(100vh - 58px)">
-                <LeftBar openModal={setIsModalOpen} projects={projects || []} />
+                <LeftBar
+                  openModal={setIsModalOpen}
+                  projects={projects || []}
+                  project={project || {}}
+                />
                 <Box className={classes.content}>
-                  <ProjectForm />;
+                  <ProjectForm project={project} />;
                 </Box>
               </Box>
             </FormikForm>

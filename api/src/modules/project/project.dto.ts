@@ -23,7 +23,7 @@ export class ProjectReq {
 
 const AnswerJoiSchema = Joi.object({
   id: Joi.string().required(),
-  answer: Joi.string().required(),
+  answer: Joi.boolean().required(),
 });
 
 export const ProjectReqJoiSchema = Joi.object({

@@ -42,6 +42,7 @@ export interface UseFreshAf {
   scores: Scores;
   hasUnsavedChanges: boolean;
 
+  clearAnswers(): void;
   setAnswer(answer: Answer): void;
   getAnswer(questionId: string): Answer;
   saveChanges(): Promise<void>;
@@ -185,6 +186,10 @@ export default function useFreshAf({ projectId }: { projectId: string }): UseFre
     answers,
     scores,
     hasUnsavedChanges: unsaved,
+
+    clearAnswers() {
+      setAnswers([]);
+    },
 
     setAnswer(answer: Answer) {
       console.log('setting answer', answer);

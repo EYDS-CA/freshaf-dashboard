@@ -12,7 +12,7 @@ export const useProjectsHook = () => {
   const getProjectById = async (projectId: string) => {
     try {
       setFetching(true);
-      const response: Project = await AxiosPublic.get(`/api/v1/project/${projectId}`);
+      const response: Project = await AxiosPublic.get(`/project/${projectId}`);
       setProject(response);
       setFetching(false);
       return response;
@@ -25,7 +25,7 @@ export const useProjectsHook = () => {
   const createProject = async (name: string) => {
     try {
       setFetching(true);
-      const response = await AxiosPublic.post('/api/v1/project', {
+      const response = await AxiosPublic.post('/project', {
         name,
         loggedInUser: 'test@freshworks.io',
         answers: [{ questionId: 'initial', answer: 'n/a' }],
@@ -42,7 +42,7 @@ export const useProjectsHook = () => {
   const getAllProjects = async () => {
     try {
       setFetching(true);
-      const projects: Project[] = await AxiosPublic.get('/api/v1/project');
+      const projects: Project[] = await AxiosPublic.get('/project');
       setProjects(projects);
       setFetching(false);
     } catch (e) {
@@ -53,7 +53,7 @@ export const useProjectsHook = () => {
 
   const updateProject = async (project: any, id: string) => {
     try {
-      const response = await AxiosPublic.put(`/api/v1/project/${id}`, project);
+      const response = await AxiosPublic.put(`/project/${id}`, project);
       return response;
     } catch (e) {
       console.log(JSON.stringify(e, null, 2));

@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { LeaderBoardTabs } from '../constants/enums/enums';
 import LeaderBoardTable from './generic/LeaderBoardTable';
 import { StyledButton } from './generic/StyledButton';
+import PropTypes from 'prop-types';
 
 const useStyles = makeStyles((theme) => ({
   header: {
@@ -31,13 +32,15 @@ const StyledTab = withStyles({
   },
 })(Tabs);
 
-function LeaderBoard() {
+function LeaderBoard(props) {
+  const { projects } = props;
   const [currentTab, setCurrentTab] = useState<LeaderBoardTabs>(LeaderBoardTabs.Project);
   const classes = useStyles();
 
   const handleChange = (e: React.ChangeEvent<{}>, newValue: LeaderBoardTabs) => {
     setCurrentTab(newValue);
   };
+
   return (
     <Box marginY={2}>
       <Typography className={classes.header}>LEADERBOARD</Typography>
@@ -56,7 +59,7 @@ function LeaderBoard() {
         </StyledTab>
       </AppBar>
       <Box marginY={2}>
-        <LeaderBoardTable data={[{ name: 'LTC', value: 1200 }]} />
+        <LeaderBoardTable projects={projects} />
       </Box>
       <Box display="flex" justifyContent="center">
         <StyledButton variant={'save'} style={{ background: 'none' }}>
@@ -66,5 +69,9 @@ function LeaderBoard() {
     </Box>
   );
 }
+
+LeaderBoard.propTypes = {
+  projects: PropTypes.array,
+};
 
 export default LeaderBoard;

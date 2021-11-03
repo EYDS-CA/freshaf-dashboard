@@ -5,6 +5,7 @@ import Appraisal from './generic/Appraisal';
 import { StyledButton } from './generic/StyledButton';
 import LeaderBoard from './LeaderBoard';
 import { useFormikContext } from 'formik';
+import PropTypes from 'prop-types';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -43,9 +44,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ProjectRating() {
+function ProjectRating(props) {
+  const { projects, project } = props;
   const classes = useStyles();
-  const { submitForm } = useFormikContext();
+  const { submitForm, values } = useFormikContext();
   return (
     <Box className={classes.container}>
       <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -56,7 +58,7 @@ function ProjectRating() {
         </Typography>
       </Box>
       <Typography className={classes.creatorText}>Creator</Typography>
-      <Typography className={classes.creatorName}>{'Sagar Roy'}</Typography>
+      <Typography className={classes.creatorName}>{project.created_by}</Typography>
       <Box marginY={3}>
         <Grid container spacing={1}>
           {[1, 2, 3, 4].map((_, index) => {
@@ -72,15 +74,29 @@ function ProjectRating() {
           })}
         </Grid>
       </Box>
-      <Typography className={classes.creatorText}>Last Updated: {''}</Typography>
+      <Typography className={classes.creatorText}>
+        Last Updated:{' '}
+        {project.updated_at ? project.updated_at : project.created_at ? project.created_at : '-'}
+      </Typography>
       <Box marginY={2} display="flex" justifyContent="center">
-        <StyledButton variant="save" onClick={submitForm}>
+        <StyledButton
+          variant="save"
+          onClick={() => {
+            console.log(JSON.stringify(values, null, 2));
+            submitForm();
+          }}
+        >
           Save
         </StyledButton>
       </Box>
-      <LeaderBoard />
+      <LeaderBoard projects={projects} />
     </Box>
   );
 }
+
+ProjectRating.propTypes = {
+  projects: PropTypes.array,
+  project: PropTypes.object,
+};
 
 export default ProjectRating;

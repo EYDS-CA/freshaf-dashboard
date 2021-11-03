@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const LeftBar = (props) => {
-  const { openModal } = props;
+  const { openModal, projects, project } = props;
   const classes = useStyles();
 
   return (
@@ -31,14 +31,16 @@ const LeftBar = (props) => {
         <Icon path={mdiPlus} size={1} />
         <Typography className={classes.buttonText}>Create New Project</Typography>
       </StyledButton>
-      <ProjectRating />
+      <ProjectRating projects={projects} project={project} />
     </Box>
   );
 };
 
 LeftBar.propTypes = {
   projects: PropTypes.array,
+  save: PropTypes.func,
   openModal: PropTypes.func,
+  project: PropTypes.object,
 };
 
 export default LeftBar;

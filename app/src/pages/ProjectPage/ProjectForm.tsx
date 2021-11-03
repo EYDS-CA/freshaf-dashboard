@@ -86,18 +86,27 @@ const icons: Record<Level, string> = {
 const ProjectForm = (props) => {
   const { project } = props;
   const classes = useStyles();
-  const { values, setFieldValue } = useFormikContext();
+  const { setFieldValue, resetForm } = useFormikContext();
   const { projectId } = useParams<{ projectId: string }>();
   const [currentTheme, setCurrentTheme] = useState<Theme>('environments');
-  const { scores, schema, hasUnsavedChanges, getAnswer, setAnswer, saveChanges } = useFreshAf({
-    projectId,
-  });
-  // const { getQuestions, questions } = useQuestionsHook();
+  const { scores, schema, hasUnsavedChanges, getAnswer, setAnswer, saveChanges, clearAnswers } =
+    useFreshAf({
+      projectId,
+    });
 
-  // useEffect(() => {
-  //   // TODO: Finish questions being fetched
-  //   getQuestions();
-  // }, []);
+  useEffect(() => {
+    if (project && project.answers) {
+      clearAnswers();
+      resetForm();
+      project.answers.forEach((answer) => {
+        setFieldValue(answer.id, answer.answer);
+        setAnswer({
+          questionId: answer.id,
+          answer: answer.answer === true ? 'yes' : 'no',
+        });
+      });
+    }
+  }, [project]);
 
   const handleThemeChange = (theme: Theme) => {
     setCurrentTheme(theme);

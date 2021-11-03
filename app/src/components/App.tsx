@@ -18,7 +18,7 @@ function App() {
 
   return (
     <Box display="flex">
-      {projects ? <LeftBar projects={projects} /> : <></>}
+      {/* {projects ? <LeftBar projects={projects} /> : <></>}
       <Box className={classes.content}>
         <Switch>
           <Route path="/project/:projectId">
@@ -32,7 +32,7 @@ function App() {
             )}
           </Route>
         </Switch>
-      </Box>
+      </Box> */}
     </Box>
   );
 }

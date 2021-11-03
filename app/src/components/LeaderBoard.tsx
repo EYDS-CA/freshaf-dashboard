@@ -1,9 +1,14 @@
 import { AppBar, Box, Tab, Tabs, Typography, makeStyles } from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { LeaderBoardTabs } from '../constants/enums/enums';
+import { useFreshAfSchema } from '../hooks/freshaf';
+import { useProjectsHook } from '../hooks/projectshook';
 import LeaderBoardTable from './generic/LeaderBoardTable';
 import { StyledButton } from './generic/StyledButton';
+import { LeaderBoardRow, LeaderBoardUtil } from '../util/leaderboard.util';
+import { useProjectContext } from '../providers/Projects';
+import { useSchemaContext } from '../providers/Schema';
 
 const useStyles = makeStyles((theme) => ({
   header: {
@@ -33,11 +38,21 @@ const StyledTab = withStyles({
 
 function LeaderBoard() {
   const [currentTab, setCurrentTab] = useState<LeaderBoardTabs>(LeaderBoardTabs.Project);
+  const [leaderBoard, setLeaderBoard] = useState<Array<LeaderBoardRow>>();
   const classes = useStyles();
+  const { projects } = useProjectContext();
+  const schema = useSchemaContext();
 
   const handleChange = (e: React.ChangeEvent<{}>, newValue: LeaderBoardTabs) => {
     setCurrentTab(newValue);
   };
+
+  useEffect(() => {
+    if (schema) {
+      const result = new LeaderBoardUtil(projects, schema).build();
+      setLeaderBoard(result);
+    }
+  }, [projects, schema]);
   return (
     <Box marginY={2}>
       <Typography className={classes.header}>LEADERBOARD</Typography>
@@ -56,7 +71,7 @@ function LeaderBoard() {
         </StyledTab>
       </AppBar>
       <Box marginY={2}>
-        <LeaderBoardTable data={[{ name: 'LTC', value: 1200 }]} />
+        <LeaderBoardTable data={leaderBoard} />
       </Box>
       <Box display="flex" justifyContent="center">
         <StyledButton variant={'save'} style={{ background: 'none' }}>

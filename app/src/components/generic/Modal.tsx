@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
 const Modal = (props: any) => {
   const classes = useStyles();
   const formRef = useRef<any>();
-  const { isVisible, titleText, onSelect, onCreate, onClose } = props;
+  const { isVisible, titleText, onSelect, onCreate, onClose, projects } = props;
 
   return (
     <Dialog open={isVisible}>
@@ -62,13 +62,18 @@ const Modal = (props: any) => {
                     </Button>
                   </Grid>
                   <Grid item xs={12}>
-                    <Button
-                      variant="outlined"
-                      onClick={() => onSelect(false)}
-                      className={classes.button}
-                    >
-                      Select an Existing Project
-                    </Button>
+                    {!!projects?.length && (
+                      <Button
+                        variant="outlined"
+                        onClick={() => {
+                          sessionStorage.setItem('visited', 'true');
+                          onSelect(false);
+                        }}
+                        className={classes.button}
+                      >
+                        Select an Existing Project
+                      </Button>
+                    )}
                   </Grid>
                 </Grid>
               </DialogActions>
@@ -86,6 +91,7 @@ Modal.propTypes = {
   onSelect: PropTypes.any,
   onCreate: PropTypes.any,
   onClose: PropTypes.bool,
+  projects: PropTypes.any,
 };
 
 export default Modal;

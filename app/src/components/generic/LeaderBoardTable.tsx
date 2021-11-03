@@ -1,5 +1,6 @@
 import { Box, makeStyles, Typography } from '@material-ui/core';
 import React from 'react';
+import { LeaderBoardRow } from '../../util/leaderboard.util';
 
 const useStyles = makeStyles((theme) => ({
   row: {
@@ -15,23 +16,23 @@ interface LeaderBoardTableRow {
 }
 
 interface LeaderBoardTableProp {
-  data: Array<LeaderBoardTableRow>;
+  data: Array<LeaderBoardRow>;
 }
 
 function LeaderBoardTable({ data }: LeaderBoardTableProp) {
   const classes = useStyles();
   return (
     <Box>
-      {data?.map((row) => {
+      {data?.map((project) => {
         return (
           <Box
-            key={row.value}
+            key={project.projectName}
             display="flex"
             justifyContent="space-between"
             className={classes.row}
           >
-            <Typography>{row.name}</Typography>
-            <Typography>{row.value}</Typography>
+            <Typography>{project.projectName}</Typography>
+            <Typography>{project.score}</Typography>
           </Box>
         );
       })}

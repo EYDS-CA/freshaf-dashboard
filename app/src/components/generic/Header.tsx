@@ -4,6 +4,7 @@ import { mdiEmoticonCoolOutline, mdiLogout } from '@mdi/js';
 import Icon from '@mdi/react';
 import SearchBar from './SearchBar';
 import { StyledButton } from './StyledButton';
+import { Project } from '../../hooks/projects';
 
 const useStyles = makeStyles((theme) => ({
   appBar: {

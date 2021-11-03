@@ -34,6 +34,8 @@ export interface ProjectSummary {
 
 export interface Project extends ProjectSummary {
   answers: Answer[];
+  creator?: string;
+  loggedInUser?: string;
 }
 
 export function isEmptyAnswer(answer: Answer): boolean {

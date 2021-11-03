@@ -4,8 +4,9 @@ import { mdiPlus } from '@mdi/js';
 import Icon from '@mdi/react';
 import { StyledButton } from '../../components/generic/StyledButton';
 import ProjectRating from '../../components/ProjectRating';
-import { ProjectSummary } from '../../hooks/projects';
+import { Project, ProjectSummary } from '../../hooks/projects';
 import PropTypes from 'prop-types';
+import { Scores } from '../../hooks/freshaf';
 
 const useStyles = makeStyles((theme) => ({
   leftBar: {
@@ -21,8 +22,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const LeftBar = (props) => {
-  const { openModal } = props;
+type LeftBarProps = {
+  openModal: React.Dispatch<React.SetStateAction<boolean>>;
+  currentProject: Project;
+  scores: Scores;
+};
+
+const LeftBar = ({ openModal, currentProject, scores }: LeftBarProps) => {
   const classes = useStyles();
 
   return (
@@ -31,14 +37,14 @@ const LeftBar = (props) => {
         <Icon path={mdiPlus} size={1} />
         <Typography className={classes.buttonText}>Create New Project</Typography>
       </StyledButton>
-      <ProjectRating />
+      <ProjectRating currentProject={currentProject} scores={scores} />
     </Box>
   );
 };
 
-LeftBar.propTypes = {
-  projects: PropTypes.array,
-  openModal: PropTypes.func,
-};
+// LeftBar.propTypes = {
+//   projects: PropTypes.array,
+//   openModal: PropTypes.func,
+// };
 
 export default LeftBar;

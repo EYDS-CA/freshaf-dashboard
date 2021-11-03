@@ -1,8 +1,11 @@
-export enum Medals {
+export enum Emoji {
   Gold = '🥇',
   Silver = '🥈',
   Bronze = '🥉',
   Pop = '💩',
+  Fire = '🔥',
+  Trophy = '🏆',
+  Check = '✅',
 }
 
 export enum MedalText {

@@ -1,6 +1,6 @@
 import { Box, makeStyles, Typography } from '@material-ui/core';
 import React from 'react';
-import { AppraisalTitles, Medals } from '../../constants/enums/enums';
+import { AppraisalTitles, Emoji } from '../../constants/enums/enums';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -27,8 +27,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-interface AppraisalProp {
-  emoji: Medals;
+export interface AppraisalProp {
+  emoji: Emoji;
   value: string | number;
   title: AppraisalTitles;
 }
@@ -37,10 +37,10 @@ function Appraisal({ emoji, value, title }: AppraisalProp) {
   const classes = useStyles();
   return (
     <Box display="flex" flexGrow={1} className={classes.container}>
-      <Typography className={classes.emoji}>🥇</Typography>
+      <Typography className={classes.emoji}>{emoji}</Typography>
       <Box ml={1}>
-        <Typography className={classes.value}>Gold</Typography>
-        <Typography className={classes.title}>Project-level</Typography>
+        <Typography className={classes.value}>{value}</Typography>
+        <Typography className={classes.title}>{title}</Typography>
       </Box>
     </Box>
   );

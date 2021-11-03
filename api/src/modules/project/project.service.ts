@@ -59,6 +59,8 @@ export class ProjectService {
         },
       })
       .promise();
+
+    return project.id;
   }
 
   async updateProject(id: string, projectReq: ProjectReq) {
